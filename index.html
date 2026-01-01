@@ -1,0 +1,1726 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Ahmet Tekeli Erkek Kuaförü | Randevu</title>
+  <meta name="theme-color" content="#151515">
+  <style>
+    :root{
+      --bg:#0f0f10;
+      --card:#ffffff;
+      --muted:#8a8a8a;
+      --text:#101010;
+      --dark:#1a1a1a;
+      --line:#eaeaea;
+      --gold:#b3872f;
+      --danger:#d94141;
+      --ok:#1f8f4f;
+      --shadow: 0 16px 40px rgba(0,0,0,.18);
+      --radius:14px;
+      --safeTop: env(safe-area-inset-top);
+      --safeBottom: env(safe-area-inset-bottom);
+      font-synthesis-weight:none;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(179,135,47,.16), transparent 45%),
+                  radial-gradient(900px 500px at 80% 10%, rgba(255,255,255,.08), transparent 40%),
+                  linear-gradient(180deg, #0d0d0e, #101113);
+      color:#fff;
+      overflow:hidden;
+    }
+    .app{height:100%;display:flex;align-items:center;justify-content:center;padding:18px 12px}
+    .phone{
+      width:min(420px, 100%);
+      height:min(860px, 100%);
+      background:#0f0f10;
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .topbar{
+      height:64px;
+      padding-top: calc(10px + var(--safeTop));
+      padding-left:14px;
+      padding-right:14px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      background: linear-gradient(180deg, #171717, #141414);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .topbar .left, .topbar .right{display:flex;align-items:center;gap:10px;min-width:56px}
+    .topbar .title{flex:1;text-align:center;font-weight:800;letter-spacing:.8px;opacity:.95}
+    .iconbtn{
+      width:38px;height:38px;border-radius:12px;
+      display:grid;place-items:center;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.06);
+      cursor:pointer;user-select:none;
+    }
+    .iconbtn:active{transform:scale(.98)}
+    .iconbtn svg{width:20px;height:20px;fill:#fff;opacity:.92}
+    .content{
+      height: calc(100% - 64px);
+      overflow:auto;
+      background: #f7f7f7;
+      color: var(--text);
+      padding-bottom: calc(16px + var(--safeBottom));
+    }
+
+    /* ✅ Ana ekran: iPhone’da iç içe girmesin */
+    .home-hero{
+      min-height: 420px;
+      position:relative;
+      background:
+        linear-gradient(0deg, rgba(0,0,0,.55), rgba(0,0,0,.15)),
+        radial-gradient(1200px 700px at 40% 0%, rgba(255,255,255,.10), transparent 55%),
+        linear-gradient(120deg, rgba(255,255,255,.08), rgba(255,255,255,.02)),
+        linear-gradient(180deg, #2b2b2b, #151515);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      align-items:center;
+      color:#fff;
+      overflow:hidden;
+      padding: 22px 16px 16px;
+    }
+    .home-hero::before{
+      content:"";position:absolute; inset:-40px;
+      background:
+        radial-gradient(closest-side at 70% 30%, rgba(255,255,255,.10), transparent 70%),
+        radial-gradient(closest-side at 25% 25%, rgba(255,255,255,.08), transparent 70%);
+      filter: blur(1px);
+      opacity:.9;
+    }
+    .brand{position:relative;text-align:center;padding:0 18px}
+    .logo-badge{
+      width: 210px;height: 118px;border: 4px solid rgba(255,255,255,.85);
+      border-radius: 999px;margin:0 auto 14px;
+      display:flex;align-items:center;justify-content:center;
+      background: rgba(0,0,0,.10);backdrop-filter: blur(2px);
+    }
+    .brand h1{margin:0;font-size:30px;letter-spacing:3px;font-weight:900;text-transform:uppercase}
+    .brand .sub{margin-top:6px;font-size:14px;opacity:.86}
+    .logo-svg{width:160px;height:70px;opacity:.95}
+
+    .home-menu{
+      position:static;
+      width:100%;
+      background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.62));
+      padding: 14px 14px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 10px}
+    .grid .item{display:flex;flex-direction:column;align-items:center;gap:8px;color:#fff;text-decoration:none;cursor:pointer;user-select:none}
+    .grid .item .gicon{
+      width:52px;height:52px;border-radius:16px;
+      display:grid;place-items:center;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 10px 18px rgba(0,0,0,.16);
+    }
+    .grid .item .gicon svg{width:26px;height:26px;fill:#fff;opacity:.92}
+    .grid .item .label{font-size:11px;letter-spacing:.6px;opacity:.95;text-transform:uppercase}
+
+    .list{background:#fff}
+    .row{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 16px;border-bottom:1px solid #ededed;gap:12px;
+    }
+    .row .name{font-weight:800;color:var(--gold)}
+    .row .price{font-weight:800;color:#9a9a9a;min-width:64px;text-align:right}
+    .row .meta{font-size:12px;color:#9c9c9c;margin-top:4px;font-weight:700}
+
+    .srow{
+      display:flex;align-items:flex-start;justify-content:space-between;
+      padding:14px 16px;border-bottom:1px solid #ededed;gap:12px;
+      cursor:pointer;user-select:none;background:#fff;
+    }
+    .sleft{display:flex;gap:12px;align-items:flex-start}
+    .radio{
+      width:22px;height:22px;border-radius:999px;border:2px solid #c9b08a;
+      display:grid;place-items:center;margin-top:2px;flex:0 0 auto;
+    }
+    .radio .dot{width:12px;height:12px;border-radius:999px;background:var(--gold);display:none}
+    .srow.selected .radio{border-color:var(--gold)}
+    .srow.selected .radio .dot{display:block}
+    .srow .stitle{font-weight:900;color:#2b2b2b}
+    .srow .sdur{font-size:12px;color:#9a9a9a;font-weight:800;margin-top:4px}
+    .srow .sprice{font-weight:900;color:#7f7f7f;min-width:64px;text-align:right}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:14px 16px;border-radius:14px;border:1px solid transparent;
+      font-weight:900;letter-spacing:.6px;cursor:pointer;user-select:none;
+    }
+    .btn:active{transform:scale(.99)}
+    .btn.primary{background:var(--gold);color:#fff;box-shadow:0 10px 24px rgba(179,135,47,.25)}
+    .btn.ghost{background:#fff;border-color:#e6e6e6;color:#2b2b2b}
+    .btn.danger{background:#fff;border-color:#f0c7c7;color:var(--danger);font-weight:900}
+    .btn.ok{background:#fff;border-color:#cfe9d8;color:var(--ok);font-weight:900}
+    .btn.full{width:100%}
+    .btn.sm{padding:10px 12px;border-radius:12px;font-weight:900;letter-spacing:.2px}
+
+    .section{padding:14px 16px;background:#fff;border-bottom:1px solid #eee}
+    .pad{padding:14px 16px}
+    .hint{font-size:12px;color:#8c8c8c;font-weight:800;margin-top:6px}
+    .rowTitle{
+      padding:14px 16px 10px;background:#fff;border-bottom:1px solid #eee;
+      font-weight:900;letter-spacing:.6px;text-transform:uppercase;
+    }
+    .hr{height:10px;background:#f1f1f1}
+
+    .dateStrip{background:#fff;padding:14px 14px 6px;border-bottom:1px solid #eee}
+    .hTitle{font-weight:900;letter-spacing:.6px;margin-bottom:10px;text-transform:uppercase}
+    .dates{display:flex;gap:10px;overflow:auto;padding-bottom:8px}
+    .dateCard{
+      width:66px;flex:0 0 auto;border-radius:12px;border:1px solid #ececec;background:#fff;
+      padding:10px;text-align:center;cursor:pointer;user-select:none;
+    }
+    .dateCard .d1{font-weight:900;font-size:12px;color:#8c8c8c}
+    .dateCard .d2{font-weight:900;font-size:18px;color:#2b2b2b;margin-top:4px}
+    .dateCard .d3{font-weight:800;font-size:12px;color:#a0a0a0;margin-top:4px}
+    .dateCard.active{border-color:rgba(179,135,47,.55);background:rgba(179,135,47,.10)}
+    .dateCard.active .d1,.dateCard.active .d3{color:rgba(179,135,47,.95)}
+    .dateCard.active .d2{color:var(--gold)}
+
+    .staffWrap{padding:14px 14px 2px;background:#fff;border-bottom:1px solid #eee}
+    .staffs{display:flex;gap:12px;overflow:auto;padding-bottom:10px}
+    .staffCard{
+      width:120px;flex:0 0 auto;border-radius:14px;border:1px solid #ececec;background:#fff;
+      padding:12px 10px;text-align:center;cursor:pointer;user-select:none;
+    }
+    .avatar{
+      width:60px;height:60px;border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, #fff, #e9e9e9);
+      border: 1px solid #e6e6e6;
+      display:grid;place-items:center;margin:0 auto 8px;overflow:hidden;
+    }
+    .avatar span{font-weight:900;color:#6c6c6c;font-size:18px}
+    .staffCard .sname{font-weight:900;color:#2b2b2b}
+    .staffCard.active{border-color:rgba(179,135,47,.55);background:rgba(179,135,47,.12)}
+
+    .timeWrap{padding:14px;background:#fff;border-bottom:1px solid #eee}
+    .times{display:flex;gap:10px;overflow:auto;padding-bottom:4px}
+    .tchip{
+      min-width:76px;padding:12px;border-radius:12px;
+      background:#dcdcdc;color:#fff;font-weight:900;text-align:center;
+      cursor:pointer;user-select:none;flex:0 0 auto;
+    }
+    .tchip.available{background:#a9a9a9}
+    .tchip.active{background:var(--gold)}
+    .tchip.disabled{background:#ececec;color:#bdbdbd;cursor:not-allowed}
+
+    .summary{padding:14px 16px;background:#fff;border-bottom:1px solid #eee}
+    .summary .line{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:8px 0;border-bottom:1px dashed #eee;gap:12px;
+    }
+    .summary .line:last-child{border-bottom:none}
+    .summary .k{font-weight:900;color:#8c8c8c}
+    .summary .v{font-weight:900;color:#2b2b2b}
+    .summary .sv{font-weight:900;color:var(--gold)}
+
+    .tabs{display:flex;background:#262626;color:#fff}
+    .tab{
+      flex:1;text-align:center;padding:12px 10px;font-weight:900;cursor:pointer;
+      user-select:none;opacity:.9;border-bottom:3px solid transparent;
+    }
+    .tab.active{background:#2f2f2f;border-bottom-color:var(--gold);opacity:1}
+
+    /* Admin alt sekmeler */
+    .subtabs{display:flex;gap:10px;overflow:auto;background:#fff;border-bottom:1px solid #eee;padding:10px 12px}
+    .chip{
+      flex:0 0 auto;
+      padding:10px 12px;border-radius:999px;
+      border:1px solid #e6e6e6;background:#fff;
+      font-weight:900;color:#2b2b2b;
+      cursor:pointer;user-select:none;
+      white-space:nowrap;
+    }
+    .chip.active{border-color:rgba(179,135,47,.55);background:rgba(179,135,47,.10);color:var(--gold)}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap}
+    .toolbar input{
+      flex:1; min-width: 160px;
+      padding:12px;border-radius:12px;border:1px solid #e6e6e6;outline:none;
+      font-weight:800;font-size:14px;
+    }
+
+    .bcard{background:#fff;padding:16px;border-bottom:1px solid #eee}
+    .bhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .bday{font-weight:900;font-size:26px;color:#2b2b2b}
+    .bmeta{font-weight:800;color:#7f7f7f;margin-top:6px}
+    .bprice{font-weight:900;font-size:28px;color:#2b2b2b;white-space:nowrap}
+    .center{display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 0 8px}
+    .bigAvatar{
+      width:90px;height:90px;border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, #fff, #e9e9e9);
+      border: 1px solid #e6e6e6;
+      display:grid;place-items:center;overflow:hidden;
+    }
+    .bigAvatar span{font-weight:900;color:#6c6c6c;font-size:26px}
+    .bname{font-weight:900;font-size:20px;color:#2b2b2b}
+    .bline{width:100%;display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-weight:900;gap:12px}
+    .muted{color:#8c8c8c;font-weight:900}
+    .spacer{height:10px}
+
+    .form{padding:14px 16px;background:#fff;border-bottom:1px solid #eee}
+    .field{margin-bottom:10px}
+    label{display:block;font-size:12px;font-weight:900;color:#7e7e7e;margin-bottom:6px}
+    input, select{
+      width:100%;padding:12px;border-radius:12px;border:1px solid #e6e6e6;outline:none;
+      font-weight:800;font-size:15px;background:#fff;
+    }
+    input:focus, select:focus{border-color:rgba(179,135,47,.55)}
+
+    .toast{
+      position:absolute;left:14px;right:14px;bottom: calc(16px + var(--safeBottom));
+      background: rgba(20,20,20,.92);color:#fff;padding:12px 14px;border-radius:14px;
+      box-shadow: 0 14px 30px rgba(0,0,0,.25);
+      display:none;z-index:50;border:1px solid rgba(255,255,255,.08);
+      font-weight:900;
+    }
+    .toast.show{display:block}
+    .toast small{opacity:.8;font-weight:800}
+
+    @media (max-height: 740px){
+      .brand h1{font-size:26px}
+      .home-hero{min-height: 400px}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="phone" id="phone">
+    <div class="topbar">
+      <div class="left">
+        <div class="iconbtn" id="backBtn" title="Geri">
+          <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 1 0 1.4L10.41 12l4.29 4.3a1 1 0 1 1-1.4 1.4l-5-5a1 1 0 0 1 0-1.4l5-5a1 1 0 0 1 1.4 0z"/></svg>
+        </div>
+      </div>
+      <div class="title" id="topTitle">AHMET TEKELİ</div>
+      <div class="right">
+        <div class="iconbtn" id="homeBtn" title="Ana Sayfa">
+          <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3l9-8z"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="content" id="content"></div>
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+
+<script>
+/** =========================
+ *  0) AYARLAR
+ *  ========================= */
+const CONFIG = {
+  brandName: "Ahmet Tekeli Erkek Kuaförü",
+  brandShort: "AHMET TEKELİ",
+  slogan: "Erkeğin makyajı saçı sakalıdır",
+  gold: "#b3872f",
+  phone: "+90 5XX XXX XX XX",
+  whatsapp: "+90 5XX XXX XX XX",
+  instagram: "@esnafmuhabbeti",
+  address: "Antalya / Muratpaşa (Adresini buraya yaz)",
+  mapUrl: "https://maps.google.com/?q=Antalya",
+  adminPin: "1234"
+};
+
+/** =========================
+ *  1) DEMO VERİLER
+ *  ========================= */
+const SEED = {
+  services: [
+    { id:"svc_hair", name:"Saç Kesimi", price: 350, duration:45 },
+    { id:"svc_beard", name:"Sakal Tıraşı", price: 200, duration:15 },
+    { id:"svc_kid", name:"Çocuk Tıraşı", price: 300, duration:30 },
+    { id:"svc_combo", name:"Saç + Sakal + Yıkama + Fön", price: 550, duration:60 },
+    { id:"svc_wash", name:"Saç Yıkama ve Fön", price: 250, duration:15 },
+    { id:"svc_tonic", name:"Saç Bakımı (Tonik ile)", price: 250, duration:30 },
+    { id:"svc_neck", name:"Ense ve Favori Düzeltme", price: 150, duration:15 },
+    { id:"svc_wax", name:"Ağda (Yanak - Kulak)", price: 150, duration:15 },
+    { id:"svc_clay", name:"Cilt Bakımı (Kil maske)", price: 300, duration:15 },
+    { id:"svc_mineral", name:"Maden Suyu Cilt Bakımı", price: 300, duration:15 },
+    { id:"svc_brow", name:"Anatomik Kaş Çizimi", price: 300, duration:15 },
+    { id:"svc_black", name:"Black Mask", price: 300, duration:15 },
+    { id:"svc_goldmask", name:"Peel Off Gold Mask", price: 350, duration:15 }
+  ],
+  staff: [
+    { id:"st_ahmet", name:"Ahmet Tekeli", role:"Usta", specialties:["Saç","Sakal","VIP"] },
+    { id:"st_usta2", name:"Usta 2", role:"Berber", specialties:["Saç","Fön"] },
+    { id:"st_usta3", name:"Usta 3", role:"Berber", specialties:["Sakal","Bakım"] }
+  ],
+  workingHours: {
+    0: null, // Pazar kapalı
+    1: { start:"09:00", end:"20:00", breaks:[{start:"13:00", end:"13:30"}] },
+    2: { start:"09:00", end:"20:00", breaks:[{start:"13:00", end:"13:30"}] },
+    3: { start:"09:00", end:"20:00", breaks:[{start:"13:00", end:"13:30"}] },
+    4: { start:"09:00", end:"20:00", breaks:[{start:"13:00", end:"13:30"}] },
+    5: { start:"09:00", end:"20:00", breaks:[{start:"13:00", end:"13:30"}] },
+    6: { start:"09:00", end:"20:00", breaks:[{start:"13:00", end:"13:30"}] }
+  }
+};
+
+/** =========================
+ *  2) Helpers
+ *  ========================= */
+const $ = (sel, root=document) => root.querySelector(sel);
+const DAYS_TR = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+const DAYS_SHORT = ["PAZ","PTS","SAL","ÇAR","PER","CUM","CTS"];
+const MONTHS_TR = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+function pad2(n){return String(n).padStart(2,"0");}
+function toMin(hhmm){ const [h,m]=hhmm.split(":").map(Number); return h*60+m; }
+function fromMin(min){ const h=Math.floor(min/60), m=min%60; return `${pad2(h)}:${pad2(m)}`; }
+function ymd(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+function sum(arr){ return arr.reduce((a,b)=>a+b,0); }
+function currencyTry(n){ return `${Number(n||0).toLocaleString("tr-TR")} ₺`; }
+function initials(name){
+  const parts=(name||"").trim().split(/\s+/).filter(Boolean);
+  if(!parts.length) return "•";
+  const a=parts[0][0]||"";
+  const b=parts.length>1 ? parts[parts.length-1][0] : (parts[0][1]||"");
+  return (a+b).toUpperCase();
+}
+function escapeHtml(s){
+  return String(s ?? "")
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#39;");
+}
+function escapeAttr(s){ return escapeHtml(s).replaceAll("\n"," "); }
+function nowKey(){
+  const d=new Date();
+  return ymd(d)+" "+fromMin(d.getHours()*60+d.getMinutes());
+}
+function toast(msg, sub=""){
+  const t=$("#toast");
+  t.innerHTML = sub ? `${msg}<br><small>${sub}</small>` : msg;
+  t.classList.add("show");
+  clearTimeout(window.__toastT);
+  window.__toastT = setTimeout(()=>t.classList.remove("show"), 2400);
+}
+function confirmSafe(msg){ try{ return confirm(msg); } catch(e){ return true; } }
+function normPhone(p){ return String(p||"").replace(/\D/g,""); }
+function safeStr(x){ return (x==null? "" : String(x)); }
+
+/** =========================
+ *  3) Storage (Local)
+ *  ========================= */
+const LS_KEYS = {
+  init: "atkuafor_init_v3",
+  me: "atkuafor_me_v3",
+  services: "atkuafor_services_v3",
+  staff: "atkuafor_staff_v3",
+  bookings: "atkuafor_bookings_v3",
+  hours: "atkuafor_hours_v3",
+  customers: "atkuafor_customers_v3"
+};
+
+const Store = {
+  init(){
+    if(localStorage.getItem(LS_KEYS.init)) return;
+    localStorage.setItem(LS_KEYS.services, JSON.stringify(SEED.services));
+    localStorage.setItem(LS_KEYS.staff, JSON.stringify(SEED.staff));
+    localStorage.setItem(LS_KEYS.bookings, JSON.stringify([]));
+    localStorage.setItem(LS_KEYS.hours, JSON.stringify(SEED.workingHours));
+    localStorage.setItem(LS_KEYS.customers, JSON.stringify([]));
+    localStorage.setItem(LS_KEYS.init, "1");
+  },
+  resetAll(){
+    localStorage.removeItem(LS_KEYS.init);
+    localStorage.removeItem(LS_KEYS.me);
+    localStorage.removeItem(LS_KEYS.services);
+    localStorage.removeItem(LS_KEYS.staff);
+    localStorage.removeItem(LS_KEYS.bookings);
+    localStorage.removeItem(LS_KEYS.hours);
+    localStorage.removeItem(LS_KEYS.customers);
+    Store.init();
+  },
+
+  getMe(){ return JSON.parse(localStorage.getItem(LS_KEYS.me) || "null"); },
+  setMe(me){ localStorage.setItem(LS_KEYS.me, JSON.stringify(me)); },
+  clearMe(){ localStorage.removeItem(LS_KEYS.me); },
+
+  getServices(){ return JSON.parse(localStorage.getItem(LS_KEYS.services) || "[]"); },
+  setServices(arr){ localStorage.setItem(LS_KEYS.services, JSON.stringify(arr)); },
+
+  getStaff(){ return JSON.parse(localStorage.getItem(LS_KEYS.staff) || "[]"); },
+  setStaff(arr){ localStorage.setItem(LS_KEYS.staff, JSON.stringify(arr)); },
+
+  getHours(){ return JSON.parse(localStorage.getItem(LS_KEYS.hours) || "null"); },
+  setHours(obj){ localStorage.setItem(LS_KEYS.hours, JSON.stringify(obj)); },
+
+  getBookings(){ return JSON.parse(localStorage.getItem(LS_KEYS.bookings) || "[]"); },
+  setBookings(arr){ localStorage.setItem(LS_KEYS.bookings, JSON.stringify(arr)); },
+
+  getCustomers(){ return JSON.parse(localStorage.getItem(LS_KEYS.customers) || "[]"); },
+  setCustomers(arr){ localStorage.setItem(LS_KEYS.customers, JSON.stringify(arr)); },
+
+  upsertCustomer({name, phone}){
+    const phoneN = normPhone(phone);
+    const list = Store.getCustomers();
+    let c = list.find(x => x.phoneN === phoneN);
+    if(!c){
+      c = { id:"cu_"+Math.random().toString(16).slice(2,10), name, phone, phoneN, createdAt:new Date().toISOString() };
+      list.push(c);
+    }else{
+      c.name = name || c.name;
+      c.phone = phone || c.phone;
+    }
+    Store.setCustomers(list);
+    return c;
+  },
+
+  addBooking(b){ const all=Store.getBookings(); all.push(b); Store.setBookings(all); },
+  updateBooking(id, patch){
+    const all=Store.getBookings();
+    const i=all.findIndex(x=>x.id===id);
+    if(i>=0){ all[i]={...all[i], ...patch}; Store.setBookings(all); }
+  },
+  deleteBooking(id){
+    Store.setBookings(Store.getBookings().filter(b=>b.id!==id));
+  }
+};
+
+/** =========================
+ *  4) Slot hesaplama (15dk)
+ *  ========================= */
+function subtractIntervals(baseIntervals, cutIntervals){
+  let result = baseIntervals.slice();
+  for(const cut of cutIntervals){
+    const next=[];
+    for(const b of result){
+      if(cut.e <= b.s || cut.s >= b.e){ next.push(b); }
+      else{
+        if(cut.s > b.s) next.push({s:b.s, e:cut.s});
+        if(cut.e < b.e) next.push({s:cut.e, e:b.e});
+      }
+    }
+    result = next;
+  }
+  return result.filter(x=>x.e-x.s>0).sort((a,b)=>a.s-b.s);
+}
+function getFreeIntervals(dateStr, staffId){
+  const d = new Date(dateStr+"T00:00:00");
+  const dow = d.getDay();
+  const hours = Store.getHours() || SEED.workingHours;
+  const wh = hours[dow];
+  if(!wh) return [];
+  const base=[{s:toMin(wh.start), e:toMin(wh.end)}];
+  const breaks=(wh.breaks||[]).map(x=>({s:toMin(x.start), e:toMin(x.end)}));
+  const busy=Store.getBookings()
+    .filter(b=>b.staffId===staffId && b.date===dateStr && b.status==="active")
+    .map(b=>({s:toMin(b.time), e:toMin(b.endTime)}));
+  let free=subtractIntervals(base, breaks);
+  free=subtractIntervals(free, busy);
+  return free;
+}
+function generateSlots(dateStr, staffId, durationMin, step=15){
+  if(!dateStr || !staffId || !durationMin) return [];
+  const free=getFreeIntervals(dateStr, staffId);
+  const slots=[];
+  for(const intv of free){
+    let t=intv.s;
+    if(t % step !== 0) t += (step - (t % step));
+    while(t + durationMin <= intv.e){
+      slots.push(fromMin(t));
+      t += step;
+    }
+  }
+  return slots;
+}
+
+/** =========================
+ *  5) State / Router
+ *  ========================= */
+const State = {
+  route: "home",
+  stack: [],
+  bookingDraft: { serviceIds: [], date:null, staffId:null, time:null },
+  acctTab: "active",
+  isAdmin: false,
+
+  adminTab: "services",      // services | staff | bookings | customers | settings
+  editServiceId: null,
+  editStaffId: null,
+
+  adminSearch: "",
+  adminBookingFilter: "all", // all | active | completed | cancelled
+  customerOpenId: null
+};
+
+function push(route){ State.stack.push(State.route); State.route=route; render(); }
+function back(){ State.route = State.stack.pop() || "home"; render(); }
+function goHome(){ State.stack=[]; State.route="home"; render(); }
+function setTopbar(title){
+  $("#topTitle").textContent = title;
+  const show = (State.route !== "home");
+  $("#backBtn").style.visibility = show ? "visible" : "hidden";
+  $("#homeBtn").style.visibility = show ? "visible" : "hidden";
+}
+
+/** =========================
+ *  6) UI - Icons / Logo
+ *  ========================= */
+function LogoSVG(){
+  return `
+  <svg class="logo-svg" viewBox="0 0 420 180" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g fill="none" stroke="white" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M70 120 L110 70 L170 105 L210 55 L250 105 L310 70 L350 120" />
+      <path d="M70 120 H350" />
+      <path d="M120 140 H300" />
+      <path d="M140 140 v22" /><path d="M160 140 v22" /><path d="M180 140 v22" /><path d="M200 140 v22" />
+      <path d="M220 140 v22" /><path d="M240 140 v22" /><path d="M260 140 v22" /><path d="M280 140 v22" />
+      <path d="M190 92 L160 62" />
+      <path d="M230 92 L260 62" />
+      <path d="M190 92 L230 92" />
+      <circle cx="188" cy="98" r="12" />
+      <circle cx="232" cy="98" r="12" />
+      <path d="M210 38 q-16 10 -16 24 q16 14 32 0 q0-14-16-24z" />
+    </g>
+  </svg>`;
+}
+
+const Icons = {
+  phone: `<svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.6 3 3.6 5 6.6 6.6l2.2-2.2c.3-.3.8-.4 1.2-.2 1.3.5 2.8.8 4.3.8.6 0 1 .4 1 1v3.5c0 .6-.4 1-1 1C10.8 22.3 1.7 13.2 1.7 2.7c0-.6.4-1 1-1H6.2c.6 0 1 .4 1 1 0 1.5.3 3 .8 4.3.1.4 0 .9-.3 1.2L6.6 10.8z"/></svg>`,
+  scissors: `<svg viewBox="0 0 24 24"><path d="M9.5 6.5a3 3 0 1 0-4.2 4.2l2.4 2.4-2.4 2.4a3 3 0 1 0 1.4 1.4l2.7-2.7 1.6 1.6 1.2-1.2-1.6-1.6 6.6-6.6a1 1 0 0 0-1.4-1.4L9.5 12 7.1 9.6a3 3 0 0 0 2.4-3.1z"/></svg>`,
+  user: `<svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5z"/></svg>`,
+  map: `<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.3 7 13 7 13s7-7.7 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 14.5 9 2.5 2.5 0 0 1 12 11.5z"/></svg>`,
+  account: `<svg viewBox="0 0 24 24"><path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12zm0 2c-4 0-7.5 2-7.5 4.5V21h15v-2.5C19.5 16 16 14 12 14z"/></svg>`,
+  camera: `<svg viewBox="0 0 24 24"><path d="M9 3l-1.5 2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2.5L15 3H9zm3 17a5 5 0 1 1 5-5 5 5 0 0 1-5 5z"/></svg>`,
+  calendar: `<svg viewBox="0 0 24 24"><path d="M7 2h2v2h6V2h2v2h3a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3V2h2v2zm15 8H2v11h20V10z"/></svg>`,
+  logout: `<svg viewBox="0 0 24 24"><path d="M10 17v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2H8V5H4v14h4v-2h2zm9.6-5.6L16 8l1.4-1.4L23 12l-5.6 5.4L16 16l3.6-3.6H10v-2h9.6z"/></svg>`,
+  gear: `<svg viewBox="0 0 24 24"><path d="M19.4 13a7.9 7.9 0 0 0 .1-1l2-1.5-2-3.4-2.4 1a7.5 7.5 0 0 0-1.7-1l-.3-2.6H9l-.3 2.6a7.5 7.5 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.5a7.9 7.9 0 0 0 .1 1 7.9 7.9 0 0 0-.1 1l-2 1.5 2 3.4 2.4-1a7.5 7.5 0 0 0 1.7 1L9 22h6l.3-2.6a7.5 7.5 0 0 0 1.7-1l2.4 1 2-3.4-2-1.5a7.9 7.9 0 0 0 0-2zM12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5z"/></svg>`
+};
+
+function HomeItem(label, svg, route){
+  return `
+    <div class="item" onclick="App.nav('${route}')">
+      <div class="gicon">${svg}</div>
+      <div class="label">${label}</div>
+    </div>
+  `;
+}
+
+/** =========================
+ *  7) Screens
+ *  ========================= */
+function Home(){
+  setTopbar(CONFIG.brandShort);
+  return `
+    <div class="home-hero">
+      <div class="brand">
+        <div class="logo-badge">${LogoSVG()}</div>
+        <h1>${escapeHtml(CONFIG.brandShort)}</h1>
+        <div class="sub">${escapeHtml(CONFIG.slogan)}</div>
+      </div>
+
+      <div class="home-menu">
+        <div class="grid">
+          ${HomeItem("İletişim", Icons.phone, "contact")}
+          ${HomeItem("Hizmetlerimiz", Icons.scissors, "services")}
+          ${HomeItem("Personelimiz", Icons.user, "staff")}
+          ${HomeItem("Neredeyiz", Icons.map, "where")}
+          ${HomeItem("Hesabım", Icons.account, "account")}
+          ${HomeItem("Galeri", Icons.camera, "gallery")}
+          ${HomeItem("Randevu Al", Icons.calendar, "book_services")}
+          ${HomeItem("Çıkış", Icons.logout, "logout")}
+        </div>
+      </div>
+    </div>
+
+    <div class="rowTitle">Hızlı İşlem</div>
+    <div class="section">
+      <button class="btn primary full" onclick="App.startBooking()">RANDEVU AL</button>
+      <div class="hint">Bu sürüm tek dosya çalışır. Veriler cihazında (LocalStorage) tutulur.</div>
+    </div>
+  `;
+}
+
+function Services(){
+  setTopbar("HİZMETLERİMİZ");
+  const services = Store.getServices();
+  return `
+    <div class="list">
+      ${services.map(s=>`
+        <div class="row">
+          <div>
+            <div class="name">${escapeHtml(s.name)}</div>
+            <div class="meta">Süre: ${s.duration} Dakika</div>
+          </div>
+          <div class="price">${currencyTry(s.price)}</div>
+        </div>
+      `).join("")}
+    </div>
+    <div class="pad"><button class="btn primary full" onclick="App.startBooking()">RANDEVU AL</button></div>
+  `;
+}
+
+function Staff(){
+  setTopbar("PERSONELİMİZ");
+  const staff = Store.getStaff();
+  return `
+    <div class="list">
+      ${staff.map(p=>`
+        <div class="row">
+          <div style="display:flex; gap:12px; align-items:center">
+            <div class="avatar"><span>${initials(p.name)}</span></div>
+            <div>
+              <div class="name" style="color:#2b2b2b">${escapeHtml(p.name)}</div>
+              <div class="meta">${escapeHtml(p.role || "Berber")} • ${escapeHtml((p.specialties||[]).join(", ") || "Saç - Sakal")}</div>
+            </div>
+          </div>
+          <div class="price" style="color:var(--gold)">★</div>
+        </div>
+      `).join("")}
+    </div>
+    <div class="pad"><button class="btn primary full" onclick="App.startBooking()">RANDEVU AL</button></div>
+  `;
+}
+
+function Contact(){
+  setTopbar("İLETİŞİM");
+  return `
+    <div class="section">
+      <div style="font-weight:900; margin-bottom:8px">${escapeHtml(CONFIG.brandName)}</div>
+      <div class="hint">Telefon: <a href="tel:${escapeAttr(CONFIG.phone)}" style="color:var(--gold); font-weight:900; text-decoration:none">${escapeHtml(CONFIG.phone)}</a></div>
+      <div class="hint">WhatsApp: <a href="https://wa.me/${escapeAttr(CONFIG.whatsapp.replace(/\\D/g,''))}" target="_blank" style="color:var(--gold); font-weight:900; text-decoration:none">${escapeHtml(CONFIG.whatsapp)}</a></div>
+      <div class="hint">Instagram: <span style="color:var(--gold); font-weight:900">${escapeHtml(CONFIG.instagram)}</span></div>
+      <div class="spacer"></div>
+      <button class="btn primary full" onclick="App.startBooking()">RANDEVU AL</button>
+    </div>
+  `;
+}
+
+function Where(){
+  setTopbar("NEREDEYİZ");
+  return `
+    <div class="section">
+      <div style="font-weight:900; margin-bottom:8px">Adres</div>
+      <div class="hint">${escapeHtml(CONFIG.address)}</div>
+      <div class="spacer"></div>
+      <a class="btn primary full" href="${escapeAttr(CONFIG.mapUrl)}" target="_blank" style="text-decoration:none">HARİTADA AÇ</a>
+    </div>
+  `;
+}
+
+function Gallery(){
+  setTopbar("GALERİ");
+  return `
+    <div class="section">
+      <div style="font-weight:900; margin-bottom:6px">Galeri (Demo)</div>
+      <div class="hint">İstersen burayı Admin’den yönetilebilir yaparız.</div>
+      <div class="spacer"></div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px">
+        ${Array.from({length:9}).map(()=>`
+          <div style="height:92px; border-radius:14px; background:linear-gradient(135deg,#eaeaea,#f7f7f7); border:1px solid #ededed"></div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+/** Booking Flow */
+function BookServices(){
+  setTopbar("RANDEVU AL");
+  const services = Store.getServices();
+  const selected = new Set(State.bookingDraft.serviceIds);
+  const totalDur = sum(State.bookingDraft.serviceIds.map(id => (services.find(s=>s.id===id)?.duration || 0)));
+  const totalPrice = sum(State.bookingDraft.serviceIds.map(id => (services.find(s=>s.id===id)?.price || 0)));
+
+  return `
+    <div class="section" style="background:#f3f3f3; border-bottom:1px solid #eee">
+      <button class="btn ghost full" onclick="App.resetBooking()">Sıfırla</button>
+    </div>
+
+    <div class="list">
+      ${services.map(s=>{
+        const on = selected.has(s.id);
+        return `
+          <div class="srow ${on?"selected":""}" onclick="App.toggleService('${escapeAttr(s.id)}')">
+            <div class="sleft">
+              <div class="radio"><div class="dot"></div></div>
+              <div>
+                <div class="stitle">${escapeHtml(s.name)}</div>
+                <div class="sdur">Süre: ${s.duration} Dakika</div>
+              </div>
+            </div>
+            <div class="sprice">${currencyTry(s.price)}</div>
+          </div>
+        `;
+      }).join("")}
+    </div>
+
+    <div class="pad">
+      <button class="btn primary full" onclick="App.nextBooking()">
+        ${Math.max(State.bookingDraft.serviceIds.length,1)} Hizmet için Randevu Al!
+        <span style="font-weight:900; opacity:.9; margin-left:10px">Süre: ${Math.max(totalDur,0)} Dakika</span>
+      </button>
+      <div class="hint">Toplam: <b>${currencyTry(totalPrice)}</b></div>
+    </div>
+  `;
+}
+
+function nextDays(n){
+  const arr=[]; const d=new Date();
+  for(let i=0;i<n;i++){ const x=new Date(d); x.setDate(d.getDate()+i); arr.push(x); }
+  return arr;
+}
+
+function renderTimeslots(slots){
+  const t = State.bookingDraft.time;
+  if(!slots.length) return `<div class="tchip disabled">—</div>`;
+  return slots.map(x=>{
+    const active = x===t;
+    return `<div class="tchip ${active?"active":"available"}" onclick="App.setTime('${x}')">${x}</div>`;
+  }).join("");
+}
+
+function BookPick(){
+  setTopbar("RANDEVU AL");
+  const services = Store.getServices();
+  const staff = Store.getStaff();
+
+  if(!State.bookingDraft.date) State.bookingDraft.date = ymd(new Date());
+  if(!State.bookingDraft.staffId) State.bookingDraft.staffId = staff[0]?.id || null;
+
+  const selectedServices = State.bookingDraft.serviceIds.map(id=>services.find(s=>s.id===id)).filter(Boolean);
+  const totalDur = sum(selectedServices.map(x=>x.duration)) || 30;
+  const slots = State.bookingDraft.staffId ? generateSlots(State.bookingDraft.date, State.bookingDraft.staffId, totalDur, 15) : [];
+
+  if(!State.bookingDraft.time) State.bookingDraft.time = slots[0] || null;
+  if(State.bookingDraft.time && !slots.includes(State.bookingDraft.time)) State.bookingDraft.time = slots[0] || null;
+
+  const dateCards = nextDays(8);
+  const selectedStaff = staff.find(x=>x.id===State.bookingDraft.staffId);
+
+  return `
+    <div class="dateStrip">
+      <div class="hTitle">TARİH SEÇİN</div>
+      <div class="dates">
+        ${dateCards.map(d=>{
+          const ds=ymd(d); const active = ds===State.bookingDraft.date;
+          return `
+            <div class="dateCard ${active?"active":""}" onclick="App.setDate('${ds}')">
+              <div class="d1">${DAYS_SHORT[d.getDay()]}</div>
+              <div class="d2">${pad2(d.getDate())}</div>
+              <div class="d3">${MONTHS_TR[d.getMonth()].slice(0,3)}</div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    </div>
+
+    <div class="staffWrap">
+      <div class="hTitle">PERSONEL SEÇİN</div>
+      <div class="staffs">
+        ${staff.map(p=>{
+          const active = p.id===State.bookingDraft.staffId;
+          return `
+            <div class="staffCard ${active?"active":""}" onclick="App.setStaff('${escapeAttr(p.id)}')">
+              <div class="avatar"><span>${initials(p.name)}</span></div>
+              <div class="sname">${escapeHtml(p.name)}</div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    </div>
+
+    <div class="timeWrap">
+      <div class="hTitle">SAAT SEÇİN</div>
+      <div class="times">${renderTimeslots(slots)}</div>
+      <div class="hint">Slot: 15 dk • Süre: <b>${totalDur} dk</b></div>
+      ${slots.length===0 ? `<div class="hint" style="color:#b24a4a; font-weight:900">Bu gün için uygun saat yok.</div>` : ""}
+    </div>
+
+    <div class="summary">
+      <div class="hTitle">SEÇTİĞİNİZ HİZMETLER</div>
+      ${selectedServices.length ? selectedServices.map(s=>`
+        <div class="line"><div class="sv">${escapeHtml(s.name)}</div><div class="v">${currencyTry(s.price)}</div></div>
+      `).join("") : `<div class="hint">Hizmet seçmedin (istersen geri dön).</div>`}
+      <div class="line">
+        <div class="k">Toplam Ücret</div>
+        <div class="v">${currencyTry(sum(selectedServices.map(x=>x.price)))}</div>
+      </div>
+    </div>
+
+    <div class="pad">
+      <button class="btn primary full" onclick="App.finishBooking()">TAMAMLA</button>
+      <div class="hint">Seçim: <b>${escapeHtml(selectedStaff?.name || "-")}</b> • <b>${escapeHtml(State.bookingDraft.date)}</b> • <b>${escapeHtml(State.bookingDraft.time || "-")}</b></div>
+    </div>
+  `;
+}
+
+/* ✅ Randevular listesi: Aktif olanların hepsinde iptal butonu */
+function renderBookingList(list, canCancel){
+  if(!list.length){
+    return `
+      <div class="section">
+        <div style="font-weight:900">Kayıt yok</div>
+        <div class="hint">Henüz randevu bulunamadı.</div>
+      </div>
+    `;
+  }
+
+  return list.map(b=>{
+    const dayName = DAYS_TR[new Date(b.date+"T00:00:00").getDay()];
+    const dateObj = new Date(b.date+"T00:00:00");
+    const pretty = `${pad2(dateObj.getDate())} ${MONTHS_TR[dateObj.getMonth()]} (${b.time})`;
+
+    return `
+      <div class="bcard">
+        <div class="bhead">
+          <div>
+            <div class="bday">${escapeHtml(dayName)}</div>
+            <div class="bmeta">${escapeHtml(pretty)}</div>
+          </div>
+          <div class="bprice">${currencyTry(b.totalPrice || 0)}</div>
+        </div>
+
+        <div class="center">
+          <div class="bigAvatar"><span>${initials(b.staffName || "-")}</span></div>
+          <div class="bname">${escapeHtml(b.staffName || "")}</div>
+        </div>
+
+        <div class="bline">
+          <div class="muted">${escapeHtml((b.serviceNames||[]).join(" + ") || "Hizmet")}</div>
+          <div>${currencyTry(b.totalPrice || 0)}</div>
+        </div>
+
+        <div class="bline">
+          <div class="muted">Süre:</div>
+          <div>${b.totalDuration || 0} dk</div>
+        </div>
+
+        ${canCancel && b.status==="active" ? `
+          <div class="spacer"></div>
+          <button class="btn ghost full" onclick="App.cancelBooking('${escapeAttr(b.id)}')">Randevuyu İptal Et</button>
+        ` : `
+          <div class="hint">Durum: <b>${b.status==="cancelled" ? "İptal" : "Geçmiş"}</b></div>
+        `}
+      </div>
+    `;
+  }).join("");
+}
+
+function Account(){
+  setTopbar("HESABIM");
+  const me = Store.getMe();
+
+  if(!me){
+    return `
+      <div class="form">
+        <div style="font-weight:900; margin-bottom:6px">Giriş / Kayıt</div>
+        <div class="hint">Randevu geçmişin için basit giriş yap.</div>
+      </div>
+      <div class="form">
+        <div class="field">
+          <label>Ad Soyad</label>
+          <input id="inName" placeholder="Örn: Ahmet Tekeli" />
+        </div>
+        <div class="field">
+          <label>Telefon</label>
+          <input id="inPhone" placeholder="05xx xxx xx xx" inputmode="tel" />
+        </div>
+        <button class="btn primary full" onclick="App.login()">GİRİŞ YAP</button>
+        <div class="hint">Not: Bu sürümde SMS yok (demo).</div>
+      </div>
+      <div class="pad"><button class="btn ghost full" onclick="App.startBooking()">RANDEVU AL</button></div>
+    `;
+  }
+
+  const bookings = Store.getBookings()
+    .filter(b=>b.customerId===me.id)
+    .sort((a,b)=> (b.date+" "+b.time).localeCompare(a.date+" "+a.time));
+
+  const nk = nowKey();
+  const active = bookings.filter(b=>b.status==="active" && (b.date+" "+b.time) >= nk);
+  const past = bookings.filter(b=>!(b.status==="active" && (b.date+" "+b.time) >= nk));
+
+  const tab = State.acctTab;
+
+  return `
+    <div class="tabs">
+      <div class="tab ${tab==="active"?"active":""}" onclick="App.setAcctTab('active')">Aktif Randevu</div>
+      <div class="tab ${tab==="past"?"active":""}" onclick="App.setAcctTab('past')">Geçmiş Randevu</div>
+    </div>
+
+    ${tab==="active" ? renderBookingList(active, true) : renderBookingList(past, false)}
+
+    <div class="pad">
+      <button class="btn primary full" onclick="App.startBooking()">YENİ RANDEVU AL</button>
+      <div class="spacer"></div>
+      <button class="btn ghost full" onclick="App.openAdmin()">⚙️ Admin</button>
+      <div class="spacer"></div>
+      <button class="btn danger full" onclick="App.logout()">ÇIKIŞ YAP</button>
+      <div class="hint">Girişli kullanıcı: <b>${escapeHtml(me.name)}</b> (${escapeHtml(me.phone)})</div>
+    </div>
+  `;
+}
+
+function Admin(){
+  setTopbar("ADMİN");
+  return `
+    <div class="form">
+      <div style="font-weight:900; margin-bottom:6px">Admin Panel</div>
+      <div class="hint">Giriş PIN: <b>${escapeHtml(CONFIG.adminPin)}</b> (koddan değiştirilebilir)</div>
+    </div>
+    <div class="form">
+      <div class="field">
+        <label>Admin PIN</label>
+        <input id="adminPin" placeholder="PIN" inputmode="numeric" />
+      </div>
+      <button class="btn primary full" onclick="App.adminLogin()">GİR</button>
+    </div>
+  `;
+}
+
+/** ===== Admin Panels ===== */
+function AdminSubTabs(){
+  const t = State.adminTab;
+  const chip = (id, label)=>`<div class="chip ${t===id?"active":""}" onclick="App.setAdminTab('${id}')">${label}</div>`;
+  return `
+    <div class="subtabs">
+      ${chip("services","Hizmetler")}
+      ${chip("staff","Personel")}
+      ${chip("bookings","Randevular")}
+      ${chip("customers","Müşteriler")}
+      ${chip("settings","Ayarlar")}
+    </div>
+  `;
+}
+
+function AdminPanel(){
+  setTopbar("ADMİN PANEL");
+  if(!State.isAdmin) return `<div class="section"><div style="font-weight:900">Yetki yok</div><div class="hint">Geri dön.</div></div>`;
+
+  return `
+    ${AdminSubTabs()}
+    ${State.adminTab==="services" ? AdminServicesPanel() : ""}
+    ${State.adminTab==="staff" ? AdminStaffPanel() : ""}
+    ${State.adminTab==="bookings" ? AdminBookingsPanel() : ""}
+    ${State.adminTab==="customers" ? AdminCustomersPanel() : ""}
+    ${State.adminTab==="settings" ? AdminSettingsPanel() : ""}
+    <div class="pad">
+      <button class="btn ghost full" onclick="App.adminLogout()">ADMİN ÇIKIŞ</button>
+    </div>
+  `;
+}
+
+function AdminServicesPanel(){
+  const services = Store.getServices();
+  const editing = State.editServiceId ? services.find(s=>s.id===State.editServiceId) : null;
+
+  return `
+    <div class="rowTitle">Hizmet Yönetimi</div>
+    <div class="form">
+      <div class="field"><label>Hizmet Adı</label><input id="as_name" placeholder="Örn: Saç + Sakal" value="${escapeAttr(editing?.name || "")}"/></div>
+      <div style="display:flex; gap:10px">
+        <div style="flex:1" class="field"><label>Fiyat (₺)</label><input id="as_price" inputmode="numeric" placeholder="500" value="${editing?.price ?? ""}"/></div>
+        <div style="flex:1" class="field"><label>Süre (dk)</label><input id="as_dur" inputmode="numeric" placeholder="60" value="${editing?.duration ?? ""}"/></div>
+      </div>
+
+      ${State.editServiceId ? `
+        <div style="display:flex; gap:10px">
+          <button class="btn primary full" style="flex:1" onclick="App.saveServiceEdit()">KAYDET</button>
+          <button class="btn ghost full" style="flex:1" onclick="App.cancelServiceEdit()">İPTAL</button>
+        </div>
+      ` : `
+        <button class="btn primary full" onclick="App.addService()">HİZMET EKLE</button>
+      `}
+      <div class="hint">Hizmetler randevu ekranında otomatik güncellenir.</div>
+    </div>
+
+    <div class="list">
+      ${services.map(s=>`
+        <div class="row">
+          <div>
+            <div class="name" style="color:#2b2b2b">${escapeHtml(s.name)}</div>
+            <div class="meta">Süre: ${s.duration} dk • ${currencyTry(s.price)}</div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center">
+            <button class="btn ghost sm" onclick="App.editService('${escapeAttr(s.id)}')">Düzenle</button>
+            <button class="btn ghost sm" onclick="App.delService('${escapeAttr(s.id)}')">Sil</button>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function AdminStaffPanel(){
+  const staff = Store.getStaff();
+  const editing = State.editStaffId ? staff.find(p=>p.id===State.editStaffId) : null;
+
+  return `
+    <div class="rowTitle">Personel Yönetimi</div>
+    <div class="form">
+      <div class="field"><label>Personel Adı</label><input id="ap_name" placeholder="Örn: Usta 4" value="${escapeAttr(editing?.name || "")}"/></div>
+      <div class="field"><label>Rol</label><input id="ap_role" placeholder="Örn: Berber" value="${escapeAttr(editing?.role || "")}"/></div>
+
+      ${State.editStaffId ? `
+        <div style="display:flex; gap:10px">
+          <button class="btn primary full" style="flex:1" onclick="App.saveStaffEdit()">KAYDET</button>
+          <button class="btn ghost full" style="flex:1" onclick="App.cancelStaffEdit()">İPTAL</button>
+        </div>
+      ` : `
+        <button class="btn primary full" onclick="App.addStaff()">PERSONEL EKLE</button>
+      `}
+      <div class="hint">Personel randevu ekranında görünür.</div>
+    </div>
+
+    <div class="list">
+      ${staff.map(p=>`
+        <div class="row">
+          <div>
+            <div class="name" style="color:#2b2b2b">${escapeHtml(p.name)}</div>
+            <div class="meta">${escapeHtml(p.role||"Berber")}</div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center">
+            <button class="btn ghost sm" onclick="App.editStaff('${escapeAttr(p.id)}')">Düzenle</button>
+            <button class="btn ghost sm" onclick="App.delStaff('${escapeAttr(p.id)}')">Sil</button>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function bookingStatusLabel(b){
+  if(b.status==="cancelled") return "İPTAL";
+  if(b.status==="completed") return "TAMAMLANDI";
+  return "AKTİF";
+}
+
+function AdminBookingsPanel(){
+  const services = Store.getServices();
+  const staff = Store.getStaff();
+  const bookings = Store.getBookings().slice().sort((a,b)=>{
+    const ak=a.date+" "+a.time, bk=b.date+" "+b.time;
+    return bk.localeCompare(ak);
+  });
+
+  const q = (State.adminSearch||"").toLowerCase().trim();
+  const flt = State.adminBookingFilter;
+
+  const filtered = bookings.filter(b=>{
+    if(flt!=="all" && b.status!==flt) return false;
+    if(!q) return true;
+    const hay = [
+      b.customerName, b.customerPhone, b.staffName,
+      (b.serviceNames||[]).join(" "), b.date, b.time, b.endTime
+    ].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
+
+  const activeCount = bookings.filter(b=>b.status==="active").length;
+  const today = ymd(new Date());
+  const todayCount = bookings.filter(b=>b.date===today && b.status==="active").length;
+
+  return `
+    <div class="rowTitle">Randevular</div>
+
+    <div class="form">
+      <div class="toolbar">
+        <input id="ab_search" placeholder="Ara: müşteri / telefon / tarih / personel" value="${escapeAttr(State.adminSearch||"")}"
+          oninput="App.setAdminSearch(this.value)" />
+        <select onchange="App.setAdminBookingFilter(this.value)">
+          <option value="all" ${flt==="all"?"selected":""}>Tümü</option>
+          <option value="active" ${flt==="active"?"selected":""}>Aktif</option>
+          <option value="completed" ${flt==="completed"?"selected":""}>Tamamlandı</option>
+          <option value="cancelled" ${flt==="cancelled"?"selected":""}>İptal</option>
+        </select>
+      </div>
+      <div class="hint">Bugün aktif: <b>${todayCount}</b> • Toplam aktif: <b>${activeCount}</b> • Toplam: <b>${bookings.length}</b></div>
+    </div>
+
+    ${filtered.length ? `
+      <div class="list">
+        ${filtered.map(b=>{
+          const st = bookingStatusLabel(b);
+          const stColor = b.status==="active" ? "var(--ok)" : (b.status==="cancelled" ? "var(--danger)" : "var(--gold)");
+          return `
+            <div class="row">
+              <div style="max-width:70%">
+                <div class="name" style="color:#2b2b2b">${escapeHtml(b.customerName || "-")} <span style="color:#8c8c8c; font-weight:900">(${escapeHtml(b.customerPhone||"")})</span></div>
+                <div class="meta">
+                  <b>${escapeHtml(b.date)}</b> ${escapeHtml(b.time)}-${escapeHtml(b.endTime)} •
+                  ${escapeHtml(b.staffName||"-")} •
+                  ${escapeHtml((b.serviceNames||[]).join(" + ")||"")}
+                </div>
+                <div class="meta">
+                  Durum: <b style="color:${stColor}">${st}</b> • Ücret: <b>${currencyTry(b.totalPrice||0)}</b>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end">
+                ${b.status==="active" ? `
+                  <button class="btn ok sm" onclick="App.adminCompleteBooking('${escapeAttr(b.id)}')">Tamamla</button>
+                  <button class="btn danger sm" onclick="App.adminCancelBooking('${escapeAttr(b.id)}')">İptal</button>
+                ` : ``}
+                <button class="btn ghost sm" onclick="App.adminDeleteBooking('${escapeAttr(b.id)}')">Sil</button>
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    ` : `
+      <div class="section">
+        <div style="font-weight:900">Sonuç yok</div>
+        <div class="hint">Arama / filtreyi değiştir.</div>
+      </div>
+    `}
+  `;
+}
+
+function buildCustomerStats(){
+  const customers = Store.getCustomers();
+  const bookings = Store.getBookings();
+  const map = new Map();
+
+  for(const c of customers){
+    map.set(c.id, { ...c, total:0, active:0, last:null, lastDate:null, revenue:0 });
+  }
+  for(const b of bookings){
+    const entry = map.get(b.customerId);
+    if(!entry) continue;
+    entry.total += 1;
+    if(b.status==="active") entry.active += 1;
+    entry.revenue += (b.totalPrice||0);
+    const key = b.date+" "+b.time;
+    if(!entry.lastDate || key > entry.lastDate){
+      entry.lastDate = key;
+      entry.last = b;
+    }
+  }
+  return Array.from(map.values()).sort((a,b)=>{
+    const ak=a.lastDate||"", bk=b.lastDate||"";
+    return bk.localeCompare(ak);
+  });
+}
+
+function AdminCustomersPanel(){
+  const q = (State.adminSearch||"").toLowerCase().trim();
+  const stats = buildCustomerStats().filter(c=>{
+    if(!q) return true;
+    const hay = [c.name, c.phone, c.phoneN].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
+
+  const openId = State.customerOpenId;
+  const openCust = openId ? stats.find(x=>x.id===openId) : null;
+  const bookingsAll = Store.getBookings().slice().sort((a,b)=> (b.date+" "+b.time).localeCompare(a.date+" "+a.time));
+  const custBookings = openCust ? bookingsAll.filter(b=>b.customerId===openCust.id) : [];
+
+  return `
+    <div class="rowTitle">Müşteriler</div>
+
+    <div class="form">
+      <div class="toolbar">
+        <input id="ac_search" placeholder="Ara: müşteri / telefon" value="${escapeAttr(State.adminSearch||"")}"
+          oninput="App.setAdminSearch(this.value)" />
+        <button class="btn ghost sm" onclick="App.clearCustomerOpen()">Liste</button>
+      </div>
+      <div class="hint">Müşteri sayısı: <b>${stats.length}</b></div>
+    </div>
+
+    ${openCust ? `
+      <div class="section">
+        <div style="font-weight:900; font-size:18px">${escapeHtml(openCust.name || "-")}</div>
+        <div class="hint">Telefon: <b>${escapeHtml(openCust.phone || "")}</b></div>
+        <div class="hint">Toplam randevu: <b>${openCust.total}</b> • Aktif: <b>${openCust.active}</b> • Ciro: <b>${currencyTry(openCust.revenue)}</b></div>
+        <div class="spacer"></div>
+        <button class="btn danger full" onclick="App.adminDeleteCustomer('${escapeAttr(openCust.id)}')">Müşteriyi Sil (Randevularıyla)</button>
+        <div class="hint" style="color:#b24a4a">Dikkat: Bu işlem müşterinin tüm randevularını da siler.</div>
+      </div>
+
+      <div class="rowTitle">Müşterinin Randevuları</div>
+      ${custBookings.length ? `
+        <div class="list">
+          ${custBookings.map(b=>`
+            <div class="row">
+              <div>
+                <div class="name" style="color:#2b2b2b">${escapeHtml(b.date)} ${escapeHtml(b.time)}-${escapeHtml(b.endTime)}</div>
+                <div class="meta">${escapeHtml(b.staffName||"-")} • ${escapeHtml((b.serviceNames||[]).join(" + ")||"")}</div>
+                <div class="meta">Durum: <b>${escapeHtml(bookingStatusLabel(b))}</b> • Ücret: <b>${currencyTry(b.totalPrice||0)}</b></div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end">
+                ${b.status==="active" ? `
+                  <button class="btn ok sm" onclick="App.adminCompleteBooking('${escapeAttr(b.id)}')">Tamamla</button>
+                  <button class="btn danger sm" onclick="App.adminCancelBooking('${escapeAttr(b.id)}')">İptal</button>
+                ` : ``}
+                <button class="btn ghost sm" onclick="App.adminDeleteBooking('${escapeAttr(b.id)}')">Sil</button>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      ` : `
+        <div class="section">
+          <div style="font-weight:900">Randevu yok</div>
+          <div class="hint">Bu müşteriye ait kayıt bulunamadı.</div>
+        </div>
+      `}
+    ` : `
+      ${stats.length ? `
+        <div class="list">
+          ${stats.map(c=>`
+            <div class="row" onclick="App.openCustomer('${escapeAttr(c.id)}')" style="cursor:pointer">
+              <div>
+                <div class="name" style="color:#2b2b2b">${escapeHtml(c.name||"-")}</div>
+                <div class="meta">Tel: ${escapeHtml(c.phone||"")} • Toplam: <b>${c.total}</b> • Aktif: <b>${c.active}</b></div>
+                <div class="meta">${c.last ? `Son: <b>${escapeHtml(c.last.date)} ${escapeHtml(c.last.time)}</b> • ${escapeHtml(c.last.staffName||"")}` : "Henüz randevu yok"}</div>
+              </div>
+              <div class="price" style="color:var(--gold)">${currencyTry(c.revenue||0)}</div>
+            </div>
+          `).join("")}
+        </div>
+      ` : `
+        <div class="section">
+          <div style="font-weight:900">Müşteri yok</div>
+          <div class="hint">İlk randevudan sonra listede görünür.</div>
+        </div>
+      `}
+    `}
+  `;
+}
+
+function HoursEditor(){
+  const hours = Store.getHours() || SEED.workingHours;
+  const row = (dow)=>{
+    const wh = hours[dow];
+    const label = DAYS_TR[dow];
+    if(!wh){
+      return `
+        <div class="row">
+          <div>
+            <div class="name" style="color:#2b2b2b">${label}</div>
+            <div class="meta">Kapalı</div>
+          </div>
+          <div style="display:flex; gap:8px">
+            <button class="btn ghost sm" onclick="App.hoursOpenDay(${dow})">Aç</button>
+          </div>
+        </div>
+      `;
+    }
+    const b0 = (wh.breaks||[])[0] || {start:"13:00", end:"13:30"};
+    return `
+      <div class="row">
+        <div style="flex:1">
+          <div class="name" style="color:#2b2b2b">${label}</div>
+          <div class="meta">Çalışma: <b>${escapeHtml(wh.start)}</b> - <b>${escapeHtml(wh.end)}</b></div>
+          <div class="meta">Mola: <b>${escapeHtml(b0.start)}</b> - <b>${escapeHtml(b0.end)}</b></div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end">
+          <button class="btn ghost sm" onclick="App.hoursEditDay(${dow})">Düzenle</button>
+          <button class="btn ghost sm" onclick="App.hoursCloseDay(${dow})">Kapat</button>
+        </div>
+      </div>
+    `;
+  };
+
+  return `
+    <div class="rowTitle">Çalışma Saatleri</div>
+    <div class="list">
+      ${[0,1,2,3,4,5,6].map(row).join("")}
+    </div>
+  `;
+}
+
+function AdminSettingsPanel(){
+  const bookings = Store.getBookings();
+  const customers = Store.getCustomers();
+  const services = Store.getServices();
+  const staff = Store.getStaff();
+
+  return `
+    <div class="rowTitle">Ayarlar</div>
+    <div class="section">
+      <div style="font-weight:900">Veri Özeti</div>
+      <div class="hint">Hizmet: <b>${services.length}</b> • Personel: <b>${staff.length}</b> • Randevu: <b>${bookings.length}</b> • Müşteri: <b>${customers.length}</b></div>
+      <div class="spacer"></div>
+      <button class="btn danger full" onclick="App.resetDemo()">TÜM VERİLERİ SIFIRLA (DEMO RESET)</button>
+      <div class="hint" style="color:#b24a4a">Dikkat: Bu işlem cihazındaki bütün kayıtları siler.</div>
+    </div>
+    ${HoursEditor()}
+  `;
+}
+
+/** =========================
+ *  8) App Actions
+ *  ========================= */
+const App = {
+  nav(route){
+    if(route==="logout"){ App.logout(); return; }
+    push(route);
+  },
+  startBooking(){
+    State.bookingDraft.time=null;
+    push("book_services");
+  },
+  resetBooking(){
+    State.bookingDraft={ serviceIds:[], date:null, staffId:null, time:null };
+    toast("Sıfırlandı", "Yeni seçim yapabilirsin.");
+    render();
+  },
+  toggleService(id){
+    const s=new Set(State.bookingDraft.serviceIds);
+    if(s.has(id)) s.delete(id); else s.add(id);
+    State.bookingDraft.serviceIds=[...s];
+    render();
+  },
+  nextBooking(){ push("book_pick"); },
+  setDate(ds){ State.bookingDraft.date=ds; State.bookingDraft.time=null; render(); },
+  setStaff(id){ State.bookingDraft.staffId=id; State.bookingDraft.time=null; render(); },
+  setTime(t){ State.bookingDraft.time=t; render(); },
+
+  login(){
+    const name=($("#inName")?.value||"").trim();
+    const phone=($("#inPhone")?.value||"").trim();
+    if(!name || !phone){ toast("Eksik bilgi","Ad soyad ve telefon gir."); return; }
+
+    // ✅ Aynı telefonla tekrar girişte aynı müşteri ID
+    const c = Store.upsertCustomer({name, phone});
+    Store.setMe({ id:c.id, name:c.name, phone:c.phone });
+
+    toast("Giriş yapıldı", c.name);
+    render();
+  },
+  logout(){
+    Store.clearMe();
+    toast("Çıkış yapıldı");
+    goHome();
+  },
+
+  finishBooking(){
+    const me=Store.getMe();
+    if(!me){ toast("Giriş gerekli","Hesabım’dan giriş yap."); push("account"); return; }
+
+    const staff=Store.getStaff();
+    if(!State.bookingDraft.staffId || !State.bookingDraft.date || !State.bookingDraft.time){
+      toast("Seçimler eksik","Tarih/Personel/Saat seç.");
+      return;
+    }
+
+    const services=Store.getServices();
+    const selectedServices=State.bookingDraft.serviceIds.map(id=>services.find(x=>x.id===id)).filter(Boolean);
+    const duration = sum(selectedServices.map(x=>x.duration)) || 30;
+    const total = sum(selectedServices.map(x=>x.price)) || 0;
+
+    const slotsNow=generateSlots(State.bookingDraft.date, State.bookingDraft.staffId, duration, 15);
+    if(!slotsNow.includes(State.bookingDraft.time)){
+      toast("Saat doldu","Başka saat seç.");
+      State.bookingDraft.time = slotsNow[0] || null;
+      render();
+      return;
+    }
+
+    const endMin = toMin(State.bookingDraft.time) + duration;
+
+    const booking = {
+      id:"bk_"+Math.random().toString(16).slice(2,10),
+      status:"active", // active | cancelled | completed
+      createdAt:new Date().toISOString(),
+      customerId: me.id,
+      customerName: me.name,
+      customerPhone: me.phone,
+      staffId: State.bookingDraft.staffId,
+      staffName: staff.find(x=>x.id===State.bookingDraft.staffId)?.name || "",
+      date: State.bookingDraft.date,
+      time: State.bookingDraft.time,
+      endTime: fromMin(endMin),
+      serviceIds: selectedServices.map(x=>x.id),
+      serviceNames: selectedServices.map(x=>x.name),
+      totalPrice: total,
+      totalDuration: duration
+    };
+
+    Store.addBooking(booking);
+    toast("Randevu oluşturuldu ✅", `${booking.date} ${booking.time} • ${booking.staffName}`);
+
+    State.bookingDraft={ serviceIds:[], date:null, staffId:null, time:null };
+    push("account");
+  },
+
+  setAcctTab(t){ State.acctTab=t; render(); },
+  cancelBooking(id){
+    Store.updateBooking(id, { status:"cancelled" });
+    toast("Randevu iptal edildi");
+    render();
+  },
+
+  openAdmin(){ push("admin"); },
+  adminLogin(){
+    const pin = ($("#adminPin")?.value||"").trim();
+    if(pin !== CONFIG.adminPin){ toast("PIN yanlış","Tekrar dene."); return; }
+    State.isAdmin = true;
+    State.adminTab = "services";
+    State.adminSearch = "";
+    State.adminBookingFilter = "all";
+    State.customerOpenId = null;
+    toast("Admin açıldı","Panelden yönetebilirsin.");
+    push("admin_panel");
+  },
+  adminLogout(){
+    State.isAdmin = false;
+    State.editServiceId = null;
+    State.editStaffId = null;
+    State.adminSearch = "";
+    State.customerOpenId = null;
+    toast("Admin kapandı");
+    back();
+  },
+
+  setAdminTab(t){
+    State.adminTab = t;
+    State.editServiceId = null;
+    State.editStaffId = null;
+    State.customerOpenId = null;
+    render();
+  },
+  setAdminSearch(v){ State.adminSearch = v; render(); },
+  setAdminBookingFilter(v){ State.adminBookingFilter = v; render(); },
+
+  openCustomer(id){ State.customerOpenId = id; render(); },
+  clearCustomerOpen(){ State.customerOpenId = null; render(); },
+
+  /** ===== Hizmet CRUD ===== */
+  addService(){
+    if(!State.isAdmin){ toast("Yetki yok"); return; }
+    const name = ($("#as_name")?.value||"").trim();
+    const price = Number(($("#as_price")?.value||"").trim());
+    const dur = Number(($("#as_dur")?.value||"").trim());
+    if(!name || !price || !dur){ toast("Eksik bilgi","Ad/fiyat/süre gir."); return; }
+
+    const arr=Store.getServices();
+    arr.push({ id:"svc_"+Math.random().toString(16).slice(2,8), name, price, duration: dur });
+    Store.setServices(arr);
+
+    toast("Hizmet eklendi", name);
+    render();
+  },
+  editService(id){
+    if(!State.isAdmin){ toast("Yetki yok"); return; }
+    State.editServiceId = id;
+    toast("Düzenleme modu", "Alanları değiştirip KAYDET'e bas.");
+    render();
+  },
+  cancelServiceEdit(){
+    State.editServiceId = null;
+    toast("İptal edildi");
+    render();
+  },
+  saveServiceEdit(){
+    if(!State.isAdmin || !State.editServiceId){ toast("Yetki yok"); return; }
+    const name = ($("#as_name")?.value||"").trim();
+    const price = Number(($("#as_price")?.value||"").trim());
+    const dur = Number(($("#as_dur")?.value||"").trim());
+    if(!name || !price || !dur){ toast("Eksik bilgi","Ad/fiyat/süre gir."); return; }
+
+    const arr=Store.getServices();
+    const i=arr.findIndex(x=>x.id===State.editServiceId);
+    if(i<0){ toast("Bulunamadı"); State.editServiceId=null; render(); return; }
+
+    arr[i] = { ...arr[i], name, price, duration: dur };
+    Store.setServices(arr);
+
+    toast("Güncellendi ✅", name);
+    State.editServiceId = null;
+    render();
+  },
+  delService(id){
+    if(!State.isAdmin){ toast("Yetki yok"); return; }
+    const s = Store.getServices().find(x=>x.id===id);
+    if(!confirmSafe(`"${s?.name||'Bu hizmet'}" silinsin mi?`)) return;
+
+    Store.setServices(Store.getServices().filter(x=>x.id!==id));
+
+    // Seçili draft'tan da çıkar
+    State.bookingDraft.serviceIds = State.bookingDraft.serviceIds.filter(x=>x!==id);
+
+    if(State.editServiceId===id) State.editServiceId=null;
+    toast("Silindi");
+    render();
+  },
+
+  /** ===== Personel CRUD ===== */
+  addStaff(){
+    if(!State.isAdmin){ toast("Yetki yok"); return; }
+    const name = ($("#ap_name")?.value||"").trim();
+    const role = ($("#ap_role")?.value||"").trim() || "Berber";
+    if(!name){ toast("Eksik bilgi","Personel adı gir."); return; }
+
+    const arr=Store.getStaff();
+    arr.push({ id:"st_"+Math.random().toString(16).slice(2,8), name, role, specialties:[] });
+    Store.setStaff(arr);
+
+    toast("Personel eklendi", name);
+    render();
+  },
+  editStaff(id){
+    if(!State.isAdmin){ toast("Yetki yok"); return; }
+    State.editStaffId = id;
+    toast("Düzenleme modu", "Alanları değiştirip KAYDET'e bas.");
+    render();
+  },
+  cancelStaffEdit(){
+    State.editStaffId = null;
+    toast("İptal edildi");
+    render();
+  },
+  saveStaffEdit(){
+    if(!State.isAdmin || !State.editStaffId){ toast("Yetki yok"); return; }
+    const name = ($("#ap_name")?.value||"").trim();
+    const role = ($("#ap_role")?.value||"").trim() || "Berber";
+    if(!name){ toast("Eksik bilgi","Personel adı gir."); return; }
+
+    const arr=Store.getStaff();
+    const i=arr.findIndex(x=>x.id===State.editStaffId);
+    if(i<0){ toast("Bulunamadı"); State.editStaffId=null; render(); return; }
+
+    arr[i] = { ...arr[i], name, role };
+    Store.setStaff(arr);
+
+    toast("Güncellendi ✅", name);
+    State.editStaffId = null;
+    render();
+  },
+  delStaff(id){
+    if(!State.isAdmin){ toast("Yetki yok"); return; }
+    const p = Store.getStaff().find(x=>x.id===id);
+    if(!confirmSafe(`"${p?.name||'Bu personel'}" silinsin mi?`)) return;
+
+    Store.setStaff(Store.getStaff().filter(x=>x.id!==id));
+
+    if(State.bookingDraft.staffId===id) State.bookingDraft.staffId = Store.getStaff()[0]?.id || null;
+    if(State.editStaffId===id) State.editStaffId=null;
+
+    toast("Silindi");
+    render();
+  },
+
+  /** ===== Admin - Randevu işlemleri ===== */
+  adminCancelBooking(id){
+    if(!State.isAdmin) return;
+    if(!confirmSafe("Bu randevu iptal edilsin mi?")) return;
+    Store.updateBooking(id, { status:"cancelled" });
+    toast("İptal edildi");
+    render();
+  },
+  adminCompleteBooking(id){
+    if(!State.isAdmin) return;
+    Store.updateBooking(id, { status:"completed" });
+    toast("Tamamlandı");
+    render();
+  },
+  adminDeleteBooking(id){
+    if(!State.isAdmin) return;
+    if(!confirmSafe("Bu randevu tamamen silinsin mi?")) return;
+    Store.deleteBooking(id);
+    toast("Silindi");
+    render();
+  },
+
+  /** ===== Admin - Müşteri işlemleri ===== */
+  adminDeleteCustomer(cid){
+    if(!State.isAdmin) return;
+    if(!confirmSafe("Bu müşteri ve tüm randevuları silinsin mi?")) return;
+
+    Store.setBookings(Store.getBookings().filter(b=>b.customerId!==cid));
+    Store.setCustomers(Store.getCustomers().filter(c=>c.id!==cid));
+
+    const me = Store.getMe();
+    if(me?.id===cid) Store.clearMe();
+
+    State.customerOpenId = null;
+    toast("Müşteri silindi");
+    render();
+  },
+
+  /** ===== Çalışma saatleri ===== */
+  hoursOpenDay(dow){
+    const hours = Store.getHours() || SEED.workingHours;
+    hours[dow] = { start:"09:00", end:"20:00", breaks:[{start:"13:00", end:"13:30"}] };
+    Store.setHours(hours);
+    toast("Gün açıldı", DAYS_TR[dow]);
+    render();
+  },
+  hoursCloseDay(dow){
+    if(!confirmSafe(`${DAYS_TR[dow]} kapatılsın mı?`)) return;
+    const hours = Store.getHours() || SEED.workingHours;
+    hours[dow] = null;
+    Store.setHours(hours);
+    toast("Gün kapatıldı", DAYS_TR[dow]);
+    render();
+  },
+  hoursEditDay(dow){
+    const hours = Store.getHours() || SEED.workingHours;
+    const wh = hours[dow] || { start:"09:00", end:"20:00", breaks:[{start:"13:00", end:"13:30"}] };
+    const b0 = (wh.breaks||[])[0] || {start:"13:00", end:"13:30"};
+
+    const start = prompt(`${DAYS_TR[dow]} başlangıç (HH:MM)`, wh.start) || wh.start;
+    const end = prompt(`${DAYS_TR[dow]} bitiş (HH:MM)`, wh.end) || wh.end;
+    const bs = prompt(`${DAYS_TR[dow]} mola başlangıç (HH:MM)`, b0.start) || b0.start;
+    const be = prompt(`${DAYS_TR[dow]} mola bitiş (HH:MM)`, b0.end) || b0.end;
+
+    hours[dow] = { start, end, breaks:[{start:bs, end:be}] };
+    Store.setHours(hours);
+    toast("Saatler güncellendi", DAYS_TR[dow]);
+    render();
+  },
+
+  resetDemo(){
+    if(!confirmSafe("Tüm veriler silinsin mi?")) return;
+    Store.resetAll();
+    State.isAdmin=false;
+    State.route="home";
+    State.stack=[];
+    toast("Reset tamam", "Demo veriler yüklendi.");
+    render();
+  }
+};
+
+/** =========================
+ *  9) Render
+ *  ========================= */
+function render(){
+  $("#backBtn").onclick = back;
+  $("#homeBtn").onclick = goHome;
+
+  const c=$("#content");
+  switch(State.route){
+    case "home": c.innerHTML = Home(); break;
+    case "services": c.innerHTML = Services(); break;
+    case "staff": c.innerHTML = Staff(); break;
+    case "contact": c.innerHTML = Contact(); break;
+    case "where": c.innerHTML = Where(); break;
+    case "gallery": c.innerHTML = Gallery(); break;
+    case "account": c.innerHTML = Account(); break;
+    case "book_services": c.innerHTML = BookServices(); break;
+    case "book_pick": c.innerHTML = BookPick(); break;
+    case "admin": c.innerHTML = Admin(); break;
+    case "admin_panel": c.innerHTML = AdminPanel(); break;
+    default: c.innerHTML = Home(); break;
+  }
+}
+
+/** =========================
+ *  10) Boot
+ *  ========================= */
+(function boot(){
+  document.documentElement.style.setProperty("--gold", CONFIG.gold);
+  Store.init();
+  window.App = App;
+  render();
+})();
+</script>
+</body>
+</html>
