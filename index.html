@@ -5,64 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ahmet Tekeli | Premium Barber</title>
     <style>
-        :root { --gold: #c5a059; --dark: #0a0a0a; --card: #1a1a1a; --text: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        :root { --gold: #c5a059; --dark: #0a0a0a; --card: #1a1a1a; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: var(--white); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
         
-        /* LOGO ALANI */
-        .header { text-align: center; padding: 20px 0; }
-        .main-logo { width: 180px; height: 180px; object-fit: contain; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(197,160,89,0.3)); }
+        /* Logo ve Başlık */
+        .logo-box { width: 150px; height: 150px; margin: 20px auto; border: 3px solid var(--gold); border-radius: 15px; overflow: hidden; box-shadow: 0 0 20px rgba(197,160,89,0.4); }
+        .logo-box img { width: 100%; height: 100%; object-fit: cover; }
         
-        .card { background: var(--card); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; box-sizing: border-box; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; border: 1px solid #333; background: #252525; color: white; box-sizing: border-box; font-size: 16px; }
-        .input:focus { border-color: var(--gold); outline: none; }
-        
-        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; text-transform: uppercase; transition: 0.3s; }
+        /* Kart Yapısı */
+        .card { background: var(--card); padding: 25px; border-radius: 15px; width: 100%; max-width: 400px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; }
+        .active { display: block; }
+
+        /* Form Elemanları */
+        .input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #252525; color: white; box-sizing: border-box; font-size: 16px; }
+        .btn { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; text-transform: uppercase; transition: 0.3s; }
         .btn-gold { background: var(--gold); color: black; }
-        .btn-gold:hover { opacity: 0.8; transform: translateY(-2px); }
+        .btn-outline { background: transparent; color: var(--gold); border: 1px solid var(--gold); }
         
-        .app-item { background: #252525; padding: 15px; border-radius: 12px; margin-top: 12px; border-left: 4px solid var(--gold); }
-        .app-actions { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-small { flex: 1; padding: 8px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; color: white; }
+        /* Liste Öğeleri */
+        .item { background: #252525; padding: 15px; border-radius: 10px; margin-top: 10px; border-left: 4px solid var(--gold); }
+        #toast { position: fixed; bottom: 20px; background: var(--gold); color: black; padding: 12px 25px; border-radius: 50px; display: none; z-index: 10000; font-weight: bold; }
         
-        #toast { position: fixed; bottom: 30px; background: var(--gold); color: black; padding: 12px 25px; border-radius: 50px; display: none; z-index: 9999; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        /* Admin Sidebar Benzeri */
+        .admin-nav { display: flex; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav-btn { flex: 1; padding: 10px; font-size: 11px; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <img src="logo.png" alt="Ahmet Tekeli Logo" class="main-logo">
+    <div class="logo-box">
+        <img src="logo.png" alt="Ahmet Tekeli">
     </div>
 
-    <div class="card" id="auth-view">
-        <div id="login-form">
-            <h2 style="text-align:center; color:var(--gold); margin-top:0;">Müşteri Girişi</h2>
-            <input type="tel" id="lPhone" class="input" placeholder="Telefon (5xx...)" maxlength="10">
-            <input type="password" id="lPass" class="input" placeholder="Şifreniz">
-            <button class="btn btn-gold" id="btnLogin">GİRİŞ YAP</button>
-            <button class="btn" style="background:transparent; color:var(--gold); border:1px solid var(--gold);" id="btnGoReg">YENİ KAYIT OL</button>
-            <div style="text-align:center; margin-top:15px;">
-                <a href="#" id="btnForgot" style="color:#888; font-size:13px; text-decoration:none;">Şifremi Unuttum?</a>
-            </div>
-        </div>
-
-        <div id="reg-form" style="display:none;">
-            <h2 style="text-align:center; color:var(--gold); margin-top:0;">Yeni Kayıt</h2>
-            <input type="text" id="rName" class="input" placeholder="Ad Soyad">
-            <input type="tel" id="rPhone" class="input" placeholder="Telefon (5xx...)" maxlength="10">
-            <input type="password" id="rPass" class="input" placeholder="Şifre Oluşturun">
-            <button class="btn btn-gold" id="btnRegister">KAYIT OL</button>
-            <button class="btn" style="background:transparent; color:#888;" id="btnGoLog">GERİ DÖN</button>
-        </div>
+    <div id="view-login" class="card active">
+        <h2 style="text-align:center; color:var(--gold);">Giriş Yap</h2>
+        <input type="tel" id="lPhone" class="input" placeholder="Telefon (5xx...)" maxlength="10">
+        <input type="password" id="lPass" class="input" placeholder="Şifre">
+        <button class="btn btn-gold" onclick="doLogin()">Giriş Yap</button>
+        <button class="btn btn-outline" onclick="showView('view-register')">Yeni Kayıt Ol</button>
     </div>
 
-    <div class="card" id="panel-view" style="display:none;">
-        <h3 style="margin-top:0;">Hoş Geldin, <span id="uName" style="color:var(--gold);">...</span></h3>
-        <button class="btn btn-gold" onclick="window.location.href='randevu-al.html'">➕ YENİ RANDEVU AL</button>
-        
-        <h4 style="margin-top:25px; border-bottom:1px solid #333; padding-bottom:10px; letter-spacing:1px;">RANDEVULARIM</h4>
-        <div id="my-apps"></div>
-        
-        <button class="btn" style="background:#333; color:#888; margin-top:30px;" id="btnLogout">GÜVENLİ ÇIKIŞ</button>
+    <div id="view-register" class="card">
+        <h2 style="text-align:center; color:var(--gold);">Müşteri Kaydı</h2>
+        <input type="text" id="rName" class="input" placeholder="Ad Soyad">
+        <input type="tel" id="rPhone" class="input" placeholder="Telefon" maxlength="10">
+        <input type="password" id="rPass" class="input" placeholder="Şifre Belirle">
+        <button class="btn btn-gold" onclick="doRegister()">Kayıt Ol</button>
+        <button class="btn btn-outline" onclick="showView('view-login')">Geri Dön</button>
+    </div>
+
+    <div id="view-customer" class="card">
+        <h3 id="custName">Hoş Geldin</h3>
+        <button class="btn btn-gold" onclick="window.location.href='randevu-al.html'">➕ Yeni Randevu Al</button>
+        <h4 style="margin-top:20px; color:var(--gold);">Randevularım</h4>
+        <div id="cust-apps"></div>
+        <button class="btn btn-outline" onclick="logout()" style="margin-top:20px;">Çıkış Yap</button>
+    </div>
+
+    <div id="view-admin" class="card" style="max-width: 600px;">
+        <h2 style="color:var(--gold);">Admin Paneli</h2>
+        <div class="admin-nav">
+            <button class="nav-btn" onclick="loadAdminApps()">📅 Randevular</button>
+            <button class="nav-btn" onclick="alert('Berber Yönetimi')">✂️ Berberler</button>
+            <button class="nav-btn" onclick="alert('Stok Yönetimi')">📦 Stok</button>
+            <button class="nav-btn" onclick="logout()">🚪 Çıkış</button>
+        </div>
+        <div id="admin-content">
+            <h4>Bugünkü Randevular</h4>
+            <div id="admin-apps-list"></div>
+        </div>
     </div>
 
     <div id="toast"></div>
@@ -71,120 +82,93 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // FIREBASE CONFIG - Kendi bilgilerini buraya yapıştır
-        const firebaseConfig = { 
-            apiKey: "BURAYA_API_KEY", 
-            projectId: "ahmet-tekeli", 
-            appId: "BURAYA_APP_ID" 
+        // --- FIREBASE AYARLARI ---
+        const firebaseConfig = {
+            apiKey: "BURAYA_API_KEY_GELECEK",
+            projectId: "ahmet-tekeli",
+            appId: "BURAYA_APP_ID_GELECEK"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- BUTON BAĞLANTILARI (TEPKİ SORUNUNU ÇÖZEN KISIM) ---
-        document.getElementById("btnLogin").addEventListener("click", doLogin);
-        document.getElementById("btnRegister").addEventListener("click", doRegister);
-        document.getElementById("btnGoReg").addEventListener("click", () => toggleView(true));
-        document.getElementById("btnGoLog").addEventListener("click", () => toggleView(false));
-        document.getElementById("btnLogout").addEventListener("click", logout);
-        document.getElementById("btnForgot").addEventListener("click", forgotPass);
+        // --- FONKSİYONLARI ÇALIŞTIRMAK İÇİN WINDOW NESNESİNE BAĞLIYORUZ ---
+        
+        window.showView = (id) => {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        };
 
-        async function doLogin() {
+        window.doLogin = async () => {
             const p = document.getElementById("lPhone").value.trim();
             const pass = document.getElementById("lPass").value;
-            if(!p || !pass) return showMsg("Lütfen bilgileri girin!");
+
+            // Admin Girişi (Numarayı kendinize göre değiştirin)
+            if(p === "5350000000" && pass === "admin123") {
+                showView('view-admin');
+                loadAdminApps();
+                return;
+            }
 
             try {
                 const snap = await getDoc(doc(db, "customers", p));
                 if(snap.exists() && snap.data().pass === pass) {
-                    startSession(snap.data());
+                    localStorage.setItem("userPhone", p);
+                    document.getElementById("custName").innerText = "Selam, " + snap.data().name;
+                    showView('view-customer');
+                    loadCustomerApps(p);
                 } else {
-                    showMsg("Hatalı telefon veya şifre!");
+                    showMsg("Hatalı bilgiler!");
                 }
-            } catch(e) { showMsg("Bağlantı hatası!"); console.error(e); }
-        }
+            } catch(e) { showMsg("Hata: Firebase bağlantısı yok!"); }
+        };
 
-        async function doRegister() {
+        window.doRegister = async () => {
             const n = document.getElementById("rName").value;
             const p = document.getElementById("rPhone").value;
             const pass = document.getElementById("rPass").value;
-            if(n.length < 3 || p.length < 10) return showMsg("Bilgileri kontrol edin!");
+            if(p.length < 10) return showMsg("Geçerli numara girin!");
 
             await setDoc(doc(db, "customers", p), { name: n, phone: p, pass: pass });
             showMsg("Kayıt başarılı!");
-            startSession({ name: n, phone: p });
-        }
+            window.doLogin();
+        };
 
-        async function forgotPass() {
-            const p = document.getElementById("lPhone").value;
-            if(p.length < 10) return showMsg("Önce telefon numaranızı girin!");
-            const otp = Math.floor(100000 + Math.random() * 900000);
-            window.open(`https://wa.me/90${p}?text=Ahmet Tekeli Şifre Kodunuz: *${otp}*`);
-            const input = prompt("WhatsApp'tan gelen 6 haneli kodu girin:");
-            if(input == otp) {
-                const newP = prompt("Yeni şifrenizi girin:");
-                if(newP) {
-                    await updateDoc(doc(db, "customers", p), { pass: newP });
-                    showMsg("Şifre güncellendi!");
-                }
-            }
-        }
-
-        function startSession(user) {
-            localStorage.setItem("at_user", user.phone);
-            document.getElementById("uName").innerText = user.name;
-            document.getElementById("auth-view").style.display = "none";
-            document.getElementById("panel-view").style.display = "block";
-            loadApps(user.phone);
-        }
-
-        async function loadApps(phone) {
+        window.loadCustomerApps = async (phone) => {
             const q = query(collection(db, "appointments"), where("customerPhone", "==", phone));
             const snap = await getDocs(q);
             let h = "";
             snap.forEach(d => {
                 const a = d.data();
-                h += `<div class="app-item">
-                    <b>📅 ${a.date} | ⏰ ${a.time}</b><br>
-                    <small style="color:#888">${a.service || 'Hizmet Seçilmedi'}</small>
-                    <div class="app-actions">
-                        <button onclick="window.editApp('${d.id}')" class="btn-small" style="background:#2980b9;">DEĞİŞTİR</button>
-                        <button onclick="window.delApp('${d.id}')" class="btn-small" style="background:#c0392b;">İPTAL ET</button>
-                    </div>
-                </div>`;
+                h += `<div class="item"><b>${a.date} - ${a.time}</b><br><button onclick="deleteApp('${d.id}')" style="color:red; background:none; border:none; cursor:pointer;">İptal Et</button></div>`;
             });
-            document.getElementById("my-apps").innerHTML = h || "<p style='color:#666'>Aktif randevunuz bulunmuyor.</p>";
-        }
+            document.getElementById("cust-apps").innerHTML = h || "Randevunuz yok.";
+        };
 
-        // Global fonksiyonlar (HTML'den çağrılanlar)
-        window.delApp = async (id) => {
-            if(confirm("Randevuyu iptal etmek istediğinize emin misiniz?")) {
+        window.loadAdminApps = async () => {
+            const snap = await getDocs(collection(db, "appointments"));
+            let h = "";
+            snap.forEach(d => {
+                const a = d.data();
+                h += `<div class="item"><b>${a.customerName}</b><br>${a.date} | ${a.time}</div>`;
+            });
+            document.getElementById("admin-apps-list").innerHTML = h || "Randevu yok.";
+        };
+
+        window.deleteApp = async (id) => {
+            if(confirm("Silinsin mi?")) {
                 await deleteDoc(doc(db, "appointments", id));
-                showMsg("İptal edildi.");
-                loadApps(localStorage.getItem("at_user"));
+                showMsg("Silindi.");
+                loadCustomerApps(localStorage.getItem("userPhone"));
             }
         };
 
-        window.editApp = (id) => {
-            if(confirm("Tarihi değiştirmek için mevcut randevunuz silinecek. Devam edilsin mi?")) {
-                deleteDoc(doc(db, "appointments", id)).then(() => {
-                    window.location.href = "randevu-al.html";
-                });
-            }
-        };
-
-        function toggleView(reg) {
-            document.getElementById("login-form").style.display = reg ? "none" : "block";
-            document.getElementById("reg-form").style.display = reg ? "block" : "none";
-        }
+        window.logout = () => { localStorage.clear(); location.reload(); };
 
         function showMsg(m) {
             const t = document.getElementById("toast");
             t.innerText = m; t.style.display = "block";
             setTimeout(() => t.style.display = "none", 3000);
         }
-
-        function logout() { localStorage.clear(); location.reload(); }
     </script>
 </body>
 </html>
