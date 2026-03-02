@@ -1,1489 +1,247 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Ahmet Tekeli Erkek Kuaförü | Randevu</title>
-  <meta name="theme-color" content="#111111">
-  <style>
-    :root{
-      --bg:#0f0f10; --dark:#141414; --card:#fff; --text:#151515; --muted:#8b8b8b;
-      --line:#ededed; --gold:#b3872f; --danger:#d94141; --ok:#1f8f4f;
-      --shadow: 0 16px 40px rgba(0,0,0,.18);
-      --radius:14px;
-      --safeTop: env(safe-area-inset-top);
-      --safeBottom: env(safe-area-inset-bottom);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-      background:
-        radial-gradient(1200px 600px at 20% 0%, rgba(179,135,47,.16), transparent 45%),
-        radial-gradient(900px 500px at 80% 10%, rgba(255,255,255,.08), transparent 40%),
-        linear-gradient(180deg, #0d0d0e, #101113);
-      color:#fff; overflow:hidden;
-    }
-    .app{height:100%;display:flex;align-items:center;justify-content:center;padding:18px 12px}
-    .phone{
-      width:min(420px,100%);
-      height:min(860px,100%);
-      background:#0f0f10;
-      border-radius:30px;
-      box-shadow:var(--shadow);
-      overflow:hidden; position:relative;
-      border:1px solid rgba(255,255,255,.08);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ahmet Tekeli Erkek Kuaförü | Yönetim ve Randevu</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a1a1a">
 
-    /* ✅ Topbar */
-    .topbar{
-      height:64px;
-      padding-top: calc(10px + var(--safeTop));
-      padding-left:14px; padding-right:14px;
-      display:flex; align-items:flex-end; justify-content:space-between;
-      background: linear-gradient(180deg, #171717, #141414);
-      border-bottom:1px solid rgba(255,255,255,.06);
-    }
-    .topbar.hidden{display:none}
-    .topbar .left, .topbar .right{display:flex;align-items:center;gap:10px;min-width:56px}
-    .topbar .title{flex:1;text-align:center;font-weight:900;letter-spacing:.8px;opacity:.95}
-    .iconbtn{
-      width:38px;height:38px;border-radius:12px;
-      display:grid;place-items:center;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.06);
-      cursor:pointer;user-select:none;
-    }
-    .iconbtn:active{transform:scale(.98)}
-    .iconbtn svg{width:20px;height:20px;fill:#fff;opacity:.92}
+    <style>
+        :root { --gold: #d4af37; --dark: #1a1a1a; --sidebar: #252525; --gray: #f4f4f4; --white: #ffffff; --danger: #e74c3c; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--gray); color: var(--dark); overflow-x: hidden; }
+        
+        /* Genel UI Elemanları */
+        .btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-gold { background: var(--dark); color: var(--gold); border: 1px solid var(--gold); }
+        .btn-gold:hover { background: var(--gold); color: white; }
+        .input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .card { background: var(--white); padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: 10px auto; max-width: 500px; }
+        
+        /* Admin Sidebar & Layout */
+        #admin-container { display: none; min-height: 100vh; }
+        .sidebar { width: 240px; background: var(--sidebar); color: white; position: fixed; height: 100%; padding-top: 20px; }
+        .sidebar h2 { text-align: center; color: var(--gold); font-size: 18px; }
+        .nav-item { padding: 15px 20px; cursor: pointer; border-bottom: 1px solid #333; }
+        .nav-item:hover { background: var(--gold); color: var(--dark); }
+        .admin-content { margin-left: 240px; padding: 30px; width: calc(100% - 240px); }
 
-    .content{
-      height: calc(100% - 64px);
-      overflow:auto;
-      background:#f7f7f7;
-      color:var(--text);
-      padding-bottom: calc(16px + var(--safeBottom));
-    }
-    .content.full{height:100%}
-
-    /* ✅ Home */
-    .home-hero{
-      min-height: 440px;
-      position:relative;
-      background:
-        linear-gradient(0deg, rgba(0,0,0,.58), rgba(0,0,0,.15)),
-        radial-gradient(1200px 700px at 40% 0%, rgba(255,255,255,.10), transparent 55%),
-        linear-gradient(180deg, #2b2b2b, #151515);
-      display:flex; flex-direction:column;
-      justify-content:space-between; align-items:center;
-      color:#fff; overflow:hidden;
-      padding: 26px 16px 16px;
-    }
-    .home-hero::before{
-      content:""; position:absolute; inset:-40px;
-      background:
-        radial-gradient(closest-side at 70% 30%, rgba(255,255,255,.10), transparent 70%),
-        radial-gradient(closest-side at 25% 25%, rgba(255,255,255,.08), transparent 70%);
-      opacity:.9;
-    }
-    .brand{position:relative;text-align:center;padding:0 18px}
-    .logo-badge{
-      width: 240px;height: 132px;
-      border: 4px solid rgba(255,255,255,.86);
-      border-radius: 999px;
-      margin:0 auto 14px;
-      display:flex;align-items:center;justify-content:center;
-      background: rgba(0,0,0,.10);
-      backdrop-filter: blur(2px);
-    }
-    .brand h1{margin:0;font-size:34px;letter-spacing:4px;font-weight:950;text-transform:uppercase}
-    .brand .sub{margin-top:8px;font-size:14px;opacity:.88;font-weight:800}
-    .logo-svg{width:190px;height:80px;opacity:.95}
-
-    .home-menu{
-      position:static; width:100%;
-      background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.62));
-      padding: 14px 14px 18px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.10);
-    }
-    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 10px}
-    .grid .item{display:flex;flex-direction:column;align-items:center;gap:8px;color:#fff;text-decoration:none;cursor:pointer;user-select:none}
-    .grid .item .gicon{
-      width:52px;height:52px;border-radius:16px;
-      display:grid;place-items:center;
-      border:1px solid rgba(255,255,255,.22);
-      background: rgba(255,255,255,.06);
-      box-shadow: 0 10px 18px rgba(0,0,0,.16);
-    }
-    .grid .item .gicon svg{width:26px;height:26px;fill:#fff;opacity:.92}
-    .grid .item .label{font-size:11px;letter-spacing:.6px;opacity:.95;text-transform:uppercase;font-weight:800}
-
-    /* Lists / Sections */
-    .rowTitle{padding:14px 16px 10px;background:#fff;border-bottom:1px solid #eee;font-weight:900;letter-spacing:.6px;text-transform:uppercase}
-    .section{padding:14px 16px;background:#fff;border-bottom:1px solid #eee}
-    .pad{padding:14px 16px}
-    .hint{font-size:12px;color:#8c8c8c;font-weight:800;margin-top:6px}
-    .hr{height:10px;background:#f1f1f1}
-    .list{background:#fff}
-    .row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #ededed;gap:12px}
-    .row .name{font-weight:900;color:var(--gold)}
-    .row .price{font-weight:900;color:#9a9a9a;min-width:64px;text-align:right}
-    .row .meta{font-size:12px;color:#9c9c9c;margin-top:4px;font-weight:800}
-
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      padding:14px 16px;border-radius:14px;border:1px solid transparent;
-      font-weight:950;letter-spacing:.6px;cursor:pointer;user-select:none;
-    }
-    .btn:active{transform:scale(.99)}
-    .btn.primary{background:var(--gold);color:#fff;box-shadow:0 10px 24px rgba(179,135,47,.25)}
-    .btn.ghost{background:#fff;border-color:#e6e6e6;color:#2b2b2b}
-    .btn.danger{background:#fff;border-color:#f0c7c7;color:var(--danger)}
-    .btn.ok{background:#fff;border-color:#cfe9d8;color:var(--ok)}
-    .btn.full{width:100%}
-    .btn.sm{padding:10px 12px;border-radius:12px;font-weight:950;letter-spacing:.2px}
-
-    /* Booking service select */
-    .srow{display:flex;align-items:flex-start;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #ededed;gap:12px;cursor:pointer;user-select:none;background:#fff}
-    .sleft{display:flex;gap:12px;align-items:flex-start}
-    .radio{width:22px;height:22px;border-radius:999px;border:2px solid #c9b08a;display:grid;place-items:center;margin-top:2px;flex:0 0 auto}
-    .radio .dot{width:12px;height:12px;border-radius:999px;background:var(--gold);display:none}
-    .srow.selected .radio{border-color:var(--gold)}
-    .srow.selected .radio .dot{display:block}
-    .stitle{font-weight:950;color:#2b2b2b}
-    .sdur{font-size:12px;color:#9a9a9a;font-weight:800;margin-top:4px}
-    .sprice{font-weight:950;color:#7f7f7f;min-width:64px;text-align:right}
-
-    /* Date strip */
-    .dateStrip{background:#fff;padding:14px 14px 6px;border-bottom:1px solid #eee}
-    .hTitle{font-weight:950;letter-spacing:.6px;margin-bottom:10px;text-transform:uppercase}
-    .dates{display:flex;gap:10px;overflow:auto;padding-bottom:8px}
-    .dateCard{width:66px;flex:0 0 auto;border-radius:12px;border:1px solid #ececec;background:#fff;padding:10px;text-align:center;cursor:pointer;user-select:none}
-    .dateCard .d1{font-weight:950;font-size:12px;color:#8c8c8c}
-    .dateCard .d2{font-weight:950;font-size:18px;color:#2b2b2b;margin-top:4px}
-    .dateCard .d3{font-weight:900;font-size:12px;color:#a0a0a0;margin-top:4px}
-    .dateCard.active{border-color:rgba(179,135,47,.55);background:rgba(179,135,47,.10)}
-    .dateCard.active .d1,.dateCard.active .d3{color:rgba(179,135,47,.95)}
-    .dateCard.active .d2{color:var(--gold)}
-
-    /* Staff cards */
-    .staffWrap{padding:14px 14px 2px;background:#fff;border-bottom:1px solid #eee}
-    .staffs{display:flex;gap:12px;overflow:auto;padding-bottom:10px}
-    .staffCard{width:120px;flex:0 0 auto;border-radius:14px;border:1px solid #ececec;background:#fff;padding:12px 10px;text-align:center;cursor:pointer;user-select:none}
-    .avatar{width:60px;height:60px;border-radius:999px;background: radial-gradient(circle at 30% 30%, #fff, #e9e9e9);border: 1px solid #e6e6e6;display:grid;place-items:center;margin:0 auto 8px;overflow:hidden}
-    .avatar span{font-weight:950;color:#6c6c6c;font-size:18px}
-    .staffCard .sname{font-weight:950;color:#2b2b2b}
-    .staffCard.active{border-color:rgba(179,135,47,.55);background:rgba(179,135,47,.12)}
-
-    /* Times */
-    .timeWrap{padding:14px;background:#fff;border-bottom:1px solid #eee}
-    .times{display:flex;gap:10px;overflow:auto;padding-bottom:4px}
-    .tchip{min-width:76px;padding:12px;border-radius:12px;background:#dcdcdc;color:#fff;font-weight:950;text-align:center;cursor:pointer;user-select:none;flex:0 0 auto}
-    .tchip.available{background:#a9a9a9}
-    .tchip.active{background:var(--gold)}
-    .tchip.disabled{background:#ececec;color:#bdbdbd;cursor:not-allowed}
-
-    /* Account bookings */
-    .tabs{display:flex;background:#262626;color:#fff}
-    .tab{flex:1;text-align:center;padding:12px 10px;font-weight:950;cursor:pointer;user-select:none;opacity:.9;border-bottom:3px solid transparent}
-    .tab.active{background:#2f2f2f;border-bottom-color:var(--gold);opacity:1}
-    .bcard{background:#fff;padding:16px;border-bottom:1px solid #eee}
-    .bhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-    .bday{font-weight:950;font-size:26px;color:#2b2b2b}
-    .bmeta{font-weight:850;color:#7f7f7f;margin-top:6px}
-    .bprice{font-weight:950;font-size:28px;color:#2b2b2b;white-space:nowrap}
-    .center{display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 0 8px}
-    .bigAvatar{width:90px;height:90px;border-radius:999px;background: radial-gradient(circle at 30% 30%, #fff, #e9e9e9);border: 1px solid #e6e6e6;display:grid;place-items:center;overflow:hidden}
-    .bigAvatar span{font-weight:950;color:#6c6c6c;font-size:26px}
-    .bname{font-weight:950;font-size:20px;color:#2b2b2b}
-    .bline{width:100%;display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-weight:950;gap:12px}
-    .muted{color:#8c8c8c;font-weight:950}
-
-    /* Forms */
-    .form{padding:14px 16px;background:#fff;border-bottom:1px solid #eee}
-    .field{margin-bottom:10px}
-    label{display:block;font-size:12px;font-weight:950;color:#7e7e7e;margin-bottom:6px}
-    input, select, textarea{
-      width:100%;padding:12px;border-radius:12px;border:1px solid #e6e6e6;outline:none;
-      font-weight:850;font-size:15px;background:#fff;
-    }
-    textarea{min-height:84px;resize:vertical}
-    input:focus, select:focus, textarea:focus{border-color:rgba(179,135,47,.55)}
-
-    /* Admin chips */
-    .subtabs{display:flex;gap:10px;overflow:auto;background:#fff;border-bottom:1px solid #eee;padding:10px 12px}
-    .chip{flex:0 0 auto;padding:10px 12px;border-radius:999px;border:1px solid #e6e6e6;background:#fff;font-weight:950;color:#2b2b2b;cursor:pointer;user-select:none;white-space:nowrap}
-    .chip.active{border-color:rgba(179,135,47,.55);background:rgba(179,135,47,.10);color:var(--gold)}
-    .toolbar{display:flex;gap:10px;flex-wrap:wrap}
-    .toolbar input{flex:1;min-width:160px}
-
-    /* Gallery */
-    .ggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .gitem{background:#f3f3f3;border:1px solid #ededed;border-radius:14px;overflow:hidden;position:relative}
-    .gitem img{width:100%;height:110px;object-fit:cover;display:block}
-    .gcap{padding:8px 10px;font-weight:900;color:#444;font-size:12px}
-    .gdel{
-      position:absolute; top:8px; right:8px;
-      background:rgba(0,0,0,.55); color:#fff;
-      border:1px solid rgba(255,255,255,.18);
-      border-radius:12px; padding:6px 8px;
-      font-weight:950; cursor:pointer; user-select:none;
-    }
-
-    .toast{
-      position:absolute;left:14px;right:14px;bottom: calc(16px + var(--safeBottom));
-      background: rgba(20,20,20,.92);color:#fff;padding:12px 14px;border-radius:14px;
-      box-shadow: 0 14px 30px rgba(0,0,0,.25);
-      display:none;z-index:50;border:1px solid rgba(255,255,255,.08);
-      font-weight:950;
-    }
-    .toast.show{display:block}
-    .toast small{opacity:.8;font-weight:850}
-
-    @media (max-height:740px){
-      .brand h1{font-size:28px}
-      .home-hero{min-height:420px}
-    }
-  </style>
+        /* Müşteri Panel Tasarımı */
+        #customer-container { padding: 20px; }
+        .logo-area { text-align: center; margin-bottom: 25px; }
+        .logo-area h1 { margin: 0; letter-spacing: 2px; }
+        .app-item { background: white; border-left: 5px solid var(--gold); padding: 15px; margin-bottom: 10px; border-radius: 8px; position: relative; }
+        
+        /* Toast Mesaj */
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 15px 30px; border-radius: 30px; color: white; display: none; z-index: 10000; font-weight: bold; }
+        
+        @media (max-width: 768px) {
+            .sidebar { width: 60px; } .sidebar h2, .nav-item span { display: none; }
+            .admin-content { margin-left: 60px; width: calc(100% - 60px); }
+        }
+    </style>
 </head>
 <body>
-<div class="app">
-  <div class="phone" id="phone">
-    <div class="topbar" id="topbar">
-      <div class="left">
-        <div class="iconbtn" id="backBtn" title="Geri">
-          <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 1 0 1.4L10.41 12l4.29 4.3a1 1 0 1 1-1.4 1.4l-5-5a1 1 0 0 1 0-1.4l5-5a1 1 0 0 1 1.4 0z"/></svg>
-        </div>
-      </div>
-      <div class="title" id="topTitle">MENÜ</div>
-      <div class="right">
-        <div class="iconbtn" id="homeBtn" title="Ana Sayfa">
-          <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3l9-8z"/></svg>
-        </div>
-      </div>
+
+<div id="toast"></div>
+
+<div id="customer-container">
+    <div class="card logo-area">
+        <h1>AHMET TEKELİ</h1>
+        <small>ERKEK KUAFÖRÜ</small>
+        <button id="btnPWA" class="btn" style="display:none; background:#28a745; color:white; margin-top:10px; width:100%;">📲 Uygulamayı Yükle</button>
     </div>
 
-    <div class="content" id="content"></div>
-    <div class="toast" id="toast"></div>
-  </div>
+    <div id="cust-login" class="card">
+        <h3>Müşteri Girişi</h3>
+        <input type="tel" id="loginPhone" class="input" placeholder="Telefon (5xx...)" maxlength="10">
+        <input type="password" id="loginPass" class="input" placeholder="Şifreniz">
+        <div style="text-align:right"><button onclick="forgotPasswordOTP()" style="background:none; border:none; color:var(--gold); cursor:pointer;">Şifremi Unuttum?</button></div>
+        <button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="doLogin()">Giriş Yap</button>
+        <button class="btn btn-outline" style="width:100%; margin-top:10px;" onclick="toggleAuth(true)">Yeni Kayıt</button>
+    </div>
+
+    <div id="cust-register" class="card" style="display:none;">
+        <h3>Yeni Kayıt</h3>
+        <input type="text" id="regName" class="input" placeholder="Ad Soyad">
+        <input type="tel" id="regPhone" class="input" placeholder="Telefon (5xx...)" maxlength="10">
+        <input type="password" id="regPass" class="input" placeholder="Şifre Oluşturun">
+        <button class="btn btn-gold" style="width:100%;" onclick="doRegister()">Kayıt Ol ve Giriş Yap</button>
+        <button class="btn" style="width:100%; margin-top:10px;" onclick="toggleAuth(false)">Geri Dön</button>
+    </div>
+
+    <div id="cust-panel" style="display:none;">
+        <div class="card">
+            <h4>Selam, <span id="welcomeName">...</span></h4>
+            <button class="btn btn-gold" style="width:100%" onclick="window.location.href='/randevu-al.html'">Yeni Randevu Al</button>
+        </div>
+        <div class="card">
+            <h3>Randevularım</h3>
+            <div id="my-apps-list"></div>
+            <button class="btn" style="width:100%; margin-top:20px; border:1px solid #ddd;" onclick="doLogout()">Güvenli Çıkış</button>
+        </div>
+    </div>
 </div>
 
-<script>
-/* =========================
-   0) AYARLAR
-========================= */
-const CONFIG = {
-  brandName: "Ahmet Tekeli Erkek Kuaförü",
-  brandShort: "AHMET TEKELİ",
-  slogan: "Erkeğin makyajı saçı sakalıdır",
-  phone: "+90 5XX XXX XX XX",
-  whatsapp: "+90 5XX XXX XX XX",
-  instagram: "@esnafmuhabbeti",
-  address: "Antalya / Muratpaşa (Adresini buraya yaz)",
-  mapUrl: "https://maps.google.com/?q=Antalya",
-  adminPin: "1234"
-};
-
-/* =========================
-   1) DEMO VERİLER
-========================= */
-const SEED = {
-  services: [
-    { id:"svc_hair", name:"Saç Kesimi", price: 350, duration:45 },
-    { id:"svc_beard", name:"Sakal Tıraşı", price: 200, duration:15 },
-    { id:"svc_kid", name:"Çocuk Tıraşı", price: 300, duration:30 },
-    { id:"svc_combo", name:"Saç + Sakal + Yıkama + Fön", price: 550, duration:60 },
-    { id:"svc_wash", name:"Saç Yıkama ve Fön", price: 250, duration:15 },
-    { id:"svc_tonic", name:"Saç Bakımı (Tonik ile)", price: 250, duration:30 },
-    { id:"svc_neck", name:"Ense ve Favori Düzeltme", price: 150, duration:15 },
-    { id:"svc_wax", name:"Ağda (Yanak - Kulak)", price: 150, duration:15 },
-    { id:"svc_clay", name:"Cilt Bakımı (Kil maske)", price: 300, duration:15 },
-    { id:"svc_mineral", name:"Maden Suyu Cilt Bakımı", price: 300, duration:15 },
-    { id:"svc_brow", name:"Anatomik Kaş Çizimi", price: 300, duration:15 },
-    { id:"svc_black", name:"Black Mask", price: 300, duration:15 },
-    { id:"svc_goldmask", name:"Peel Off Gold Mask", price: 350, duration:15 }
-  ],
-  staff: [
-    { id:"st_ahmet", name:"Ahmet Tekeli", role:"Usta" },
-    { id:"st_usta2", name:"Usta 2", role:"Berber" },
-    { id:"st_usta3", name:"Usta 3", role:"Berber" }
-  ],
-  workingHours: {
-    0: null,
-    1: { start:"09:00", end:"20:00", breaks:[{start:"13:00", end:"13:30"}] },
-    2: { start:"09:00", end:"20:00", breaks:[{start:"13:00", end:"13:30"}] },
-    3: { start:"09:00", end:"20:00", breaks:[{start:"13:00", end:"13:30"}] },
-    4: { start:"09:00", end:"20:00", breaks:[{start:"13:00", end:"13:30"}] },
-    5: { start:"09:00", end:"20:00", breaks:[{start:"13:00", end:"13:30"}] },
-    6: { start:"09:00", end:"20:00", breaks:[{start:"13:00", end:"13:30"}] }
-  },
-  gallery: [
-    // örnek:
-    // {id:"g1", src:"https://picsum.photos/600/600?1", caption:"Örnek 1", createdAt:new Date().toISOString()}
-  ]
-};
-
-/* =========================
-   2) HELPERS
-========================= */
-const $ = (s,r=document)=>r.querySelector(s);
-const DAYS_TR = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
-const DAYS_SHORT=["PAZ","PTS","SAL","ÇAR","PER","CUM","CTS"];
-const MONTHS_TR=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
-const pad2=n=>String(n).padStart(2,"0");
-const toMin=hhmm=>{const [h,m]=hhmm.split(":").map(Number);return h*60+m;}
-const fromMin=min=>`${pad2(Math.floor(min/60))}:${pad2(min%60)}`
-const ymd=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
-const sum=arr=>arr.reduce((a,b)=>a+b,0);
-const currencyTry=n=>`${Number(n||0).toLocaleString("tr-TR")} ₺`;
-const escapeHtml=s=>String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
-const escapeAttr=s=>escapeHtml(s).replaceAll("\n"," ");
-const initials=name=>{
-  const p=(name||"").trim().split(/\s+/).filter(Boolean);
-  if(!p.length) return "•";
-  const a=p[0][0]||""; const b=p.length>1?p[p.length-1][0]:(p[0][1]||"");
-  return (a+b).toUpperCase();
-}
-const normPhone=p=>String(p||"").replace(/\D/g,"");
-const nowKey=()=>{const d=new Date();return ymd(d)+" "+fromMin(d.getHours()*60+d.getMinutes());}
-function toast(msg, sub=""){
-  const t=$("#toast");
-  t.innerHTML=sub?`${msg}<br><small>${sub}</small>`:msg;
-  t.classList.add("show");
-  clearTimeout(window.__toastT);
-  window.__toastT=setTimeout(()=>t.classList.remove("show"),2200);
-}
-function confirmSafe(msg){ try{return confirm(msg);}catch(e){return true;} }
-function downloadText(filename, text, mime="text/plain;charset=utf-8"){
-  const blob=new Blob([text],{type:mime});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url; a.download=filename;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),800);
-}
-function toCSV(rows){
-  const esc=v=>{
-    const s=String(v??"");
-    if(s.includes('"')||s.includes(",")||s.includes("\n")||s.includes("\r")) return `"${s.replaceAll('"','""')}"`;
-    return s;
-  };
-  return rows.map(r=>r.map(esc).join(",")).join("\n");
-}
-function downloadCSV(filename, rows){
-  const csv="\ufeff"+toCSV(rows);
-  downloadText(filename, csv, "text/csv;charset=utf-8");
-}
-
-/* =========================
-   3) STORAGE
-========================= */
-const LS={
-  init:"at_init_v5",
-  me:"at_me_v5",
-  services:"at_services_v5",
-  staff:"at_staff_v5",
-  hours:"at_hours_v5",
-  bookings:"at_bookings_v5",
-  customers:"at_customers_v5",
-  gallery:"at_gallery_v5"
-};
-const Store={
-  init(){
-    if(localStorage.getItem(LS.init)) return;
-    localStorage.setItem(LS.services, JSON.stringify(SEED.services));
-    localStorage.setItem(LS.staff, JSON.stringify(SEED.staff));
-    localStorage.setItem(LS.hours, JSON.stringify(SEED.workingHours));
-    localStorage.setItem(LS.bookings, JSON.stringify([]));
-    localStorage.setItem(LS.customers, JSON.stringify([]));
-    localStorage.setItem(LS.gallery, JSON.stringify(SEED.gallery));
-    localStorage.setItem(LS.init, "1");
-  },
-  resetAll(){
-    Object.values(LS).forEach(k=>localStorage.removeItem(k));
-    Store.init();
-  },
-
-  getMe(){return JSON.parse(localStorage.getItem(LS.me)||"null");},
-  setMe(me){localStorage.setItem(LS.me, JSON.stringify(me));},
-  clearMe(){localStorage.removeItem(LS.me);},
-
-  getServices(){return JSON.parse(localStorage.getItem(LS.services)||"[]");},
-  setServices(a){localStorage.setItem(LS.services, JSON.stringify(a));},
-
-  getStaff(){return JSON.parse(localStorage.getItem(LS.staff)||"[]");},
-  setStaff(a){localStorage.setItem(LS.staff, JSON.stringify(a));},
-
-  getHours(){return JSON.parse(localStorage.getItem(LS.hours)||"null");},
-  setHours(o){localStorage.setItem(LS.hours, JSON.stringify(o));},
-
-  getBookings(){return JSON.parse(localStorage.getItem(LS.bookings)||"[]");},
-  setBookings(a){localStorage.setItem(LS.bookings, JSON.stringify(a));},
-
-  getCustomers(){return JSON.parse(localStorage.getItem(LS.customers)||"[]");},
-  setCustomers(a){localStorage.setItem(LS.customers, JSON.stringify(a));},
-
-  getGallery(){return JSON.parse(localStorage.getItem(LS.gallery)||"[]");},
-  setGallery(a){localStorage.setItem(LS.gallery, JSON.stringify(a));},
-
-  upsertCustomer({name, phone}){
-    const phoneN=normPhone(phone);
-    const list=Store.getCustomers();
-    let c=list.find(x=>x.phoneN===phoneN && phoneN);
-    if(!c){
-      c={id:"cu_"+Math.random().toString(16).slice(2,10), name, phone, phoneN, createdAt:new Date().toISOString()};
-      list.push(c);
-    }else{
-      c.name=name||c.name; c.phone=phone||c.phone; c.phoneN=phoneN||c.phoneN;
-    }
-    Store.setCustomers(list); return c;
-  },
-
-  addBooking(b){const all=Store.getBookings(); /* çakışma kontrol */
-    if(all.some(x=>x.staffId===b.staffId && x.date===b.date && x.time===b.time && x.status==="active")){
-      throw new Error("Bu saat dolu.");
-    }
-    all.push(b); Store.setBookings(all);
-  },
-  updateBooking(id, patch){
-    const all=Store.getBookings(); const i=all.findIndex(x=>x.id===id);
-    if(i>=0){all[i]={...all[i],...patch}; Store.setBookings(all);}
-  },
-  deleteBooking(id){Store.setBookings(Store.getBookings().filter(b=>b.id!==id));},
-
-  addGalleryItem(item){ const g=Store.getGallery(); g.unshift(item); Store.setGallery(g); },
-  deleteGalleryItem(id){ Store.setGallery(Store.getGallery().filter(x=>x.id!==id)); }
-};
-
-/* =========================
-   4) SLOT HESAPLAMA (15dk)
-========================= */
-function subtractIntervals(base, cuts){
-  let r=base.slice();
-  for(const c of cuts){
-    const next=[];
-    for(const b of r){
-      if(c.e<=b.s || c.s>=b.e) next.push(b);
-      else{
-        if(c.s>b.s) next.push({s:b.s,e:c.s});
-        if(c.e<b.e) next.push({s:c.e,e:b.e});
-      }
-    }
-    r=next;
-  }
-  return r.filter(x=>x.e-x.s>0).sort((a,b)=>a.s-b.s);
-}
-function getFreeIntervals(dateStr, staffId){
-  const d=new Date(dateStr+"T00:00:00");
-  const dow=d.getDay();
-  const hours=Store.getHours()||SEED.workingHours;
-  const wh=hours[dow];
-  if(!wh) return [];
-  const base=[{s:toMin(wh.start), e:toMin(wh.end)}];
-  const breaks=(wh.breaks||[]).map(x=>({s:toMin(x.start), e:toMin(x.end)}));
-  const busy=Store.getBookings()
-    .filter(b=>b.staffId===staffId && b.date===dateStr && b.status==="active")
-    .map(b=>({s:toMin(b.time), e:toMin(b.endTime)}));
-  let free=subtractIntervals(base, breaks);
-  free=subtractIntervals(free, busy);
-  return free;
-}
-function generateSlots(dateStr, staffId, durationMin, step=15){
-  if(!dateStr||!staffId||!durationMin) return [];
-  const free=getFreeIntervals(dateStr, staffId);
-  const slots=[];
-  for(const intv of free){
-    let t=intv.s;
-    if(t%step!==0) t += (step - (t%step));
-    while(t+durationMin<=intv.e){ slots.push(fromMin(t)); t+=step; }
-  }
-  return slots;
-}
-
-/* =========================
-   5) STATE / ROUTER
-========================= */
-const State={
-  route:"home",
-  stack:[],
-  bookingDraft:{serviceIds:[], date:null, staffId:null, time:null},
-  pendingFinalize:false,
-
-  acctTab:"active",
-  isAdmin:false,
-  adminTab:"services", // services | staff | bookings | customers | add | gallery | reports | settings
-  editServiceId:null,
-  editStaffId:null,
-  adminSearch:"",
-  adminBookingFilter:"all",
-  customerOpenId:null
-};
-function push(route){State.stack.push(State.route);State.route=route;render();}
-function back(){State.route=State.stack.pop()||"home";render();}
-function goHome(){State.stack=[];State.route="home";render();}
-function setTopbar(title){
-  $("#topTitle").textContent=title||"";
-  const show=(State.route!=="home");
-  $("#backBtn").style.visibility=show?"visible":"hidden";
-  $("#homeBtn").style.visibility=show?"visible":"hidden";
-}
-
-/* =========================
-   6) ICONS / LOGO
-========================= */
-function LogoSVG(){
-  /* ✅ Makas + Tarak + Ustura */
-  return `
-  <svg class="logo-svg" viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <g fill="none" stroke="white" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
-      <!-- comb (left) -->
-      <path d="M70 125 H210" />
-      <path d="M70 125 v25" />
-      ${Array.from({length:10}).map((_,i)=>`<path d="M${90+i*12} 125 v25" />`).join("")}
-      <path d="M210 125 v25" />
-
-      <!-- scissors (center) -->
-      <circle cx="260" cy="98" r="16" />
-      <circle cx="310" cy="98" r="16" />
-      <path d="M268 110 L235 150" />
-      <path d="M302 110 L335 150" />
-      <path d="M268 110 L310 110" />
-      <path d="M260 82 L225 50" />
-      <path d="M310 82 L345 50" />
-
-      <!-- straight razor (right) -->
-      <path d="M360 70 H465" />
-      <path d="M360 70 L382 110 H465" />
-      <path d="M465 70 v40" />
-      <path d="M398 110 v22" />
-      <path d="M398 132 h34" />
-    </g>
-  </svg>`;
-}
-
-const Icons={
-  phone:`<svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.6 3 3.6 5 6.6 6.6l2.2-2.2c.3-.3.8-.4 1.2-.2 1.3.5 2.8.8 4.3.8.6 0 1 .4 1 1v3.5c0 .6-.4 1-1 1C10.8 22.3 1.7 13.2 1.7 2.7c0-.6.4-1 1-1H6.2c.6 0 1 .4 1 1 0 1.5.3 3 .8 4.3.1.4 0 .9-.3 1.2L6.6 10.8z"/></svg>`,
-  scissors:`<svg viewBox="0 0 24 24"><path d="M9.5 6.5a3 3 0 1 0-4.2 4.2l2.4 2.4-2.4 2.4a3 3 0 1 0 1.4 1.4l2.7-2.7 1.6 1.6 1.2-1.2-1.6-1.6 6.6-6.6a1 1 0 0 0-1.4-1.4L9.5 12 7.1 9.6a3 3 0 0 0 2.4-3.1z"/></svg>`,
-  user:`<svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5z"/></svg>`,
-  map:`<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.3 7 13 7 13s7-7.7 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 14.5 9 2.5 2.5 0 0 1 12 11.5z"/></svg>`,
-  account:`<svg viewBox="0 0 24 24"><path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12zm0 2c-4 0-7.5 2-7.5 4.5V21h15v-2.5C19.5 16 16 14 12 14z"/></svg>`,
-  camera:`<svg viewBox="0 0 24 24"><path d="M9 3l-1.5 2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2.5L15 3H9zm3 17a5 5 0 1 1 5-5 5 5 0 0 1-5 5z"/></svg>`,
-  calendar:`<svg viewBox="0 0 24 24"><path d="M7 2h2v2h6V2h2v2h3a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3V2h2v2zm15 8H2v11h20V10z"/></svg>`,
-  logout:`<svg viewBox="0 0 24 24"><path d="M10 17v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2H8V5H4v14h4v-2h2zm9.6-5.6L16 8l1.4-1.4L23 12l-5.6 5.4L16 16l3.6-3.6H10v-2h9.6z"/></svg>`,
-  gear:`<svg viewBox="0 0 24 24"><path d="M19.4 13a7.9 7.9 0 0 0 .1-1l2-1.5-2-3.4-2.4 1a7.5 7.5 0 0 0-1.7-1l-.3-2.6H9l-.3 2.6a7.5 7.5 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.5a7.9 7.9 0 0 0 .1 1 7.9 7.9 0 0 0-.1 1l-2 1.5 2 3.4 2.4-1a7.5 7.5 0 0 0 1.7 1L9 22h6l.3-2.6a7.5 7.5 0 0 0 1.7-1l2.4 1 2-3.4-2-1.5a7.9 7.9 0 0 0 0-2zM12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5z"/></svg>`
-};
-
-function HomeItem(label, svg, route){
-  return `<div class="item" onclick="App.nav('${route}')"><div class="gicon">${svg}</div><div class="label">${label}</div></div>`;
-}
-
-/* =========================
-   7) SCREENS
-========================= */
-function Home(){
-  // ✅ Home'da topbar tamamen gizli
-  setTopbar("");
-  return `
-    <div class="home-hero">
-      <div class="brand">
-        <div class="logo-badge">${LogoSVG()}</div>
-        <h1>${escapeHtml(CONFIG.brandShort)}</h1>
-        <div class="sub">${escapeHtml(CONFIG.slogan)}</div>
-      </div>
-
-      <div class="home-menu">
-        <div class="grid">
-          ${HomeItem("İletişim", Icons.phone, "contact")}
-          ${HomeItem("Hizmetlerimiz", Icons.scissors, "services")}
-          ${HomeItem("Personelimiz", Icons.user, "staff")}
-          ${HomeItem("Neredeyiz", Icons.map, "where")}
-          ${HomeItem("Hesabım", Icons.account, "account")}
-          ${HomeItem("Galeri", Icons.camera, "gallery")}
-          ${HomeItem("Randevu Al", Icons.calendar, "book_services")}
-          ${HomeItem("Çıkış", Icons.logout, "logout")}
-        </div>
-      </div>
+<div id="admin-container">
+    <div class="sidebar">
+        <h2>AHMET TEKELİ<br>ADMIN</h2>
+        <div class="nav-item" onclick="showAdminTab('adm-apps')">📅 Randevular</div>
+        <div class="nav-item" onclick="showAdminTab('adm-barbers')">✂️ Berberler & İzinler</div>
+        <div class="nav-item" onclick="showAdminTab('adm-services')">💈 Hizmetler</div>
+        <div class="nav-item" onclick="showAdminTab('adm-stock')">📦 Malzeme Stok</div>
+        <div class="nav-item" onclick="doLogout()" style="color:var(--danger)">🚪 Çıkış</div>
     </div>
 
-    <div class="rowTitle">Hızlı İşlem</div>
-    <div class="section">
-      <button class="btn primary full" onclick="App.startBooking()">RANDEVU AL</button>
-      <div class="hint">Bu sürüm tek dosya çalışır. Veriler cihazında (LocalStorage) tutulur.</div>
-    </div>
-  `;
-}
-
-function Services(){
-  setTopbar("HİZMETLERİMİZ");
-  const services=Store.getServices();
-  return `
-    <div class="list">
-      ${services.map(s=>`
-        <div class="row">
-          <div><div class="name">${escapeHtml(s.name)}</div><div class="meta">Süre: ${s.duration} Dakika</div></div>
-          <div class="price">${currencyTry(s.price)}</div>
-        </div>`).join("")}
-    </div>
-    <div class="pad"><button class="btn primary full" onclick="App.startBooking()">RANDEVU AL</button></div>
-  `;
-}
-
-function Staff(){
-  setTopbar("PERSONELİMİZ");
-  const staff=Store.getStaff();
-  return `
-    <div class="list">
-      ${staff.map(p=>`
-        <div class="row">
-          <div style="display:flex; gap:12px; align-items:center">
-            <div class="avatar"><span>${initials(p.name)}</span></div>
-            <div><div class="name" style="color:#2b2b2b">${escapeHtml(p.name)}</div><div class="meta">${escapeHtml(p.role||"Berber")}</div></div>
-          </div>
-          <div class="price" style="color:var(--gold)">★</div>
-        </div>`).join("")}
-    </div>
-    <div class="pad"><button class="btn primary full" onclick="App.startBooking()">RANDEVU AL</button></div>
-  `;
-}
-
-function Contact(){
-  setTopbar("İLETİŞİM");
-  return `
-    <div class="section">
-      <div style="font-weight:950; margin-bottom:8px">${escapeHtml(CONFIG.brandName)}</div>
-      <div class="hint">Telefon: <a href="tel:${escapeAttr(CONFIG.phone)}" style="color:var(--gold); font-weight:950; text-decoration:none">${escapeHtml(CONFIG.phone)}</a></div>
-      <div class="hint">WhatsApp: <a href="https://wa.me/${escapeAttr(CONFIG.whatsapp.replace(/\D/g,''))}" target="_blank" style="color:var(--gold); font-weight:950; text-decoration:none">${escapeHtml(CONFIG.whatsapp)}</a></div>
-      <div class="hint">Instagram: <span style="color:var(--gold); font-weight:950">${escapeHtml(CONFIG.instagram)}</span></div>
-      <div style="height:10px"></div>
-      <button class="btn primary full" onclick="App.startBooking()">RANDEVU AL</button>
-    </div>
-  `;
-}
-
-function Where(){
-  setTopbar("NEREDEYİZ");
-  return `
-    <div class="section">
-      <div style="font-weight:950; margin-bottom:8px">Adres</div>
-      <div class="hint">${escapeHtml(CONFIG.address)}</div>
-      <div style="height:10px"></div>
-      <a class="btn primary full" href="${escapeAttr(CONFIG.mapUrl)}" target="_blank" style="text-decoration:none">HARİTADA AÇ</a>
-    </div>
-  `;
-}
-
-/* ✅ Galeri artık Store’dan + Admin’den yönetiliyor */
-function Gallery(){
-  setTopbar("GALERİ");
-  const g=Store.getGallery();
-  return `
-    <div class="section">
-      <div style="font-weight:950; margin-bottom:6px">Galeri</div>
-      <div class="hint">Yeni fotoğraf eklemek için: Admin > Galeri</div>
-    </div>
-    <div class="section">
-      ${g.length ? `
-        <div class="ggrid">
-          ${g.map(x=>`
-            <div class="gitem">
-              <img src="${escapeAttr(x.src)}" alt="">
-              ${x.caption ? `<div class="gcap">${escapeHtml(x.caption)}</div>` : ``}
-            </div>`).join("")}
-        </div>
-      ` : `<div class="hint">Henüz fotoğraf yok.</div>`}
-    </div>
-  `;
-}
-
-/* Booking */
-function BookServices(){
-  setTopbar("RANDEVU AL");
-  const services=Store.getServices();
-  const selected=new Set(State.bookingDraft.serviceIds);
-  const totalDur=sum(State.bookingDraft.serviceIds.map(id=>services.find(s=>s.id===id)?.duration||0));
-  const totalPrice=sum(State.bookingDraft.serviceIds.map(id=>services.find(s=>s.id===id)?.price||0));
-  return `
-    <div class="section" style="background:#f3f3f3">
-      <button class="btn ghost full" onclick="App.resetBooking()">Sıfırla</button>
-    </div>
-    <div class="list">
-      ${services.map(s=>{
-        const on=selected.has(s.id);
-        return `
-          <div class="srow ${on?"selected":""}" onclick="App.toggleService('${escapeAttr(s.id)}')">
-            <div class="sleft">
-              <div class="radio"><div class="dot"></div></div>
-              <div>
-                <div class="stitle">${escapeHtml(s.name)}</div>
-                <div class="sdur">Süre: ${s.duration} Dakika</div>
-              </div>
+    <div class="admin-content">
+        <section id="adm-apps" class="adm-sec">
+            <div class="card" style="max-width:100%">
+                <h3>Tüm Randevular</h3>
+                <div id="all-apps-list"></div>
             </div>
-            <div class="sprice">${currencyTry(s.price)}</div>
-          </div>`;
-      }).join("")}
+        </section>
+
+        <section id="adm-barbers" class="adm-sec" style="display:none;">
+            <div class="card" style="max-width:100%">
+                <h3>Berber Ekle</h3>
+                <div style="display:flex; gap:10px;">
+                    <input id="newBarberName" class="input" placeholder="Berber Adı">
+                    <button class="btn btn-gold" onclick="addBarber()">Ekle</button>
+                </div>
+                <hr>
+                <h3>İzin Tanımla</h3>
+                <div style="display:flex; gap:10px;">
+                    <select id="leaveBarberSelect" class="input"></select>
+                    <input id="leaveDate" type="date" class="input">
+                    <button class="btn btn-gold" onclick="addLeave()">İzinli Yap</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="adm-stock" class="adm-sec" style="display:none;">
+            <div class="card" style="max-width:100%">
+                <h3>Malzeme Stok Takibi</h3>
+                <div style="display:flex; gap:10px;">
+                    <input id="stockItem" class="input" placeholder="Ürün (Jilet, Havlu...)">
+                    <input id="stockQty" type="number" class="input" placeholder="Adet">
+                    <button class="btn btn-gold" onclick="updateStock()">Stoğu Güncelle</button>
+                </div>
+                <div id="stock-list"></div>
+            </div>
+        </section>
     </div>
-    <div class="pad">
-      <button class="btn primary full" onclick="App.nextBooking()">
-        ${Math.max(State.bookingDraft.serviceIds.length,1)} Hizmet için Randevu Al!
-        <span style="font-weight:950; opacity:.9; margin-left:10px">Süre: ${totalDur||0} Dakika</span>
-      </button>
-      <div class="hint">Toplam: <b>${currencyTry(totalPrice)}</b></div>
-    </div>
-  `;
-}
-function nextDays(n){
-  const arr=[]; const d=new Date();
-  for(let i=0;i<n;i++){const x=new Date(d); x.setDate(d.getDate()+i); arr.push(x);}
-  return arr;
-}
-function renderTimes(slots, selectedTime){
-  if(!slots.length) return `<div class="tchip disabled">Uygun saat yok</div>`;
-  return slots.map(x=>{
-    const active=x===selectedTime;
-    return `<div class="tchip ${active?"active":"available"}" onclick="App.setTime('${x}')">${x}</div>`;
-  }).join("");
-}
-function BookPick(){
-  setTopbar("RANDEVU AL");
-  const services=Store.getServices();
-  const staff=Store.getStaff();
+</div>
 
-  if(!State.bookingDraft.date) State.bookingDraft.date=ymd(new Date());
-  if(!State.bookingDraft.staffId) State.bookingDraft.staffId=staff[0]?.id||null;
 
-  const selectedServices=State.bookingDraft.serviceIds.map(id=>services.find(s=>s.id===id)).filter(Boolean);
-  const totalDur=sum(selectedServices.map(s=>s.duration))||30;
-  const totalPrice=sum(selectedServices.map(s=>s.price))||0;
 
-  const slots=State.bookingDraft.staffId ? generateSlots(State.bookingDraft.date, State.bookingDraft.staffId, totalDur, 15) : [];
-  if(!State.bookingDraft.time) State.bookingDraft.time=slots[0]||null;
-  if(State.bookingDraft.time && !slots.includes(State.bookingDraft.time)) State.bookingDraft.time=slots[0]||null;
+<script type="module">
+    // Firebase Importları (Gereken her şey tek modülde)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, getDocs, addDoc, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  return `
-    <div class="dateStrip">
-      <div class="hTitle">TARİH SEÇİN</div>
-      <div class="dates">
-        ${nextDays(8).map(d=>{
-          const ds=ymd(d); const active=ds===State.bookingDraft.date;
-          return `<div class="dateCard ${active?"active":""}" onclick="App.setDate('${ds}')">
-            <div class="d1">${DAYS_SHORT[d.getDay()]}</div>
-            <div class="d2">${pad2(d.getDate())}</div>
-            <div class="d3">${MONTHS_TR[d.getMonth()].slice(0,3)}</div>
-          </div>`;
-        }).join("")}
-      </div>
-    </div>
+    // KENDİ CONFIG BİLGİLERİNİZİ BURAYA EKLEYİN
+    const firebaseConfig = { apiKey: "...", projectId: "ahmet-tekeli", appId: "..." };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const COL = { cust: "customers", apps: "appointments", barb: "barbers", stock: "inventory", leave: "leaves" };
 
-    <div class="staffWrap">
-      <div class="hTitle">PERSONEL SEÇİN</div>
-      <div class="staffs">
-        ${staff.map(p=>{
-          const active=p.id===State.bookingDraft.staffId;
-          return `<div class="staffCard ${active?"active":""}" onclick="App.setStaff('${p.id}')">
-            <div class="avatar"><span>${initials(p.name)}</span></div>
-            <div class="sname">${escapeHtml(p.name)}</div>
-          </div>`;
-        }).join("")}
-      </div>
-    </div>
-
-    <div class="timeWrap">
-      <div class="hTitle">SAAT SEÇİN</div>
-      <div class="times">${renderTimes(slots, State.bookingDraft.time)}</div>
-      <div class="hint">Slot: 15 dk • Süre: <b>${totalDur} dk</b></div>
-    </div>
-
-    <div class="section">
-      <div class="hTitle">SEÇTİĞİNİZ HİZMETLER</div>
-      ${selectedServices.length ? selectedServices.map(s=>`
-        <div class="row" style="padding:10px 0; border-bottom:1px dashed #eee">
-          <div style="font-weight:950;color:var(--gold)">${escapeHtml(s.name)}</div>
-          <div style="font-weight:950;color:#333">${currencyTry(s.price)}</div>
-        </div>`).join("") : `<div class="hint">Hizmet seçilmedi.</div>`}
-      <div class="row" style="padding:10px 0; border-bottom:none">
-        <div style="font-weight:950;color:#7f7f7f">Toplam Ücret</div>
-        <div style="font-weight:950;color:#333">${currencyTry(totalPrice)}</div>
-      </div>
-    </div>
-
-    <div class="pad">
-      <button class="btn primary full" onclick="App.finishBooking()">TAMAMLA</button>
-      <div class="hint">Tarih/Saat seçimi doluysa sistem izin vermez.</div>
-    </div>
-  `;
-}
-
-/* Account */
-function renderBookingCards(list, canCancel){
-  if(!list.length) return `<div class="section"><div style="font-weight:950">Kayıt yok</div><div class="hint">Henüz randevu bulunamadı.</div></div>`;
-  return list.map(b=>{
-    const dayName=DAYS_TR[new Date(b.date+"T00:00:00").getDay()];
-    const d=new Date(b.date+"T00:00:00");
-    const pretty=`${pad2(d.getDate())} ${MONTHS_TR[d.getMonth()]} (${b.time})`;
-    return `
-      <div class="bcard">
-        <div class="bhead">
-          <div><div class="bday">${escapeHtml(dayName)}</div><div class="bmeta">${escapeHtml(pretty)}</div></div>
-          <div class="bprice">${currencyTry(b.totalPrice||0)}</div>
-        </div>
-        <div class="center">
-          <div class="bigAvatar"><span>${initials(b.staffName||"-")}</span></div>
-          <div class="bname">${escapeHtml(b.staffName||"")}</div>
-        </div>
-        <div class="bline"><div class="muted">${escapeHtml((b.serviceNames||[]).join(" + ")||"")}</div><div>${b.totalDuration||0} dk</div></div>
-
-        ${canCancel && b.status==="active" ? `
-          <button class="btn ghost full" onclick="App.cancelBooking('${b.id}')">Randevuyu İptal Et</button>
-        ` : `<div class="hint">Durum: <b>${b.status==="cancelled"?"İptal":(b.status==="completed"?"Tamamlandı":"Geçmiş")}</b></div>`}
-      </div>`;
-  }).join("");
-}
-function Account(){
-  setTopbar("HESABIM");
-  const me=Store.getMe();
-  if(!me){
-    return `
-      <div class="form">
-        <div style="font-weight:950;margin-bottom:6px">Giriş / Kayıt</div>
-        <div class="hint">Randevu geçmişin için basit giriş yap.</div>
-      </div>
-      <div class="form">
-        <div class="field"><label>Ad Soyad</label><input id="inName" placeholder="Örn: Ahmet Tekeli"></div>
-        <div class="field"><label>Telefon</label><input id="inPhone" placeholder="05xx xxx xx xx" inputmode="tel"></div>
-        <button class="btn primary full" onclick="App.login()">GİRİŞ YAP</button>
-        <div class="hint">Not: Bu sürüm demo (SMS yok).</div>
-      </div>
-      <div class="pad"><button class="btn ghost full" onclick="App.openAdmin()">⚙️ Admin</button></div>
-    `;
-  }
-
-  const all=Store.getBookings().filter(b=>b.customerId===me.id).sort((a,b)=>(b.date+" "+b.time).localeCompare(a.date+" "+a.time));
-  const nk=nowKey();
-  const active=all.filter(b=>b.status==="active" && (b.date+" "+b.time)>=nk);
-  const past=all.filter(b=>!(b.status==="active" && (b.date+" "+b.time)>=nk));
-
-  return `
-    <div class="tabs">
-      <div class="tab ${State.acctTab==="active"?"active":""}" onclick="App.setAcctTab('active')">Aktif Randevu</div>
-      <div class="tab ${State.acctTab==="past"?"active":""}" onclick="App.setAcctTab('past')">Geçmiş Randevu</div>
-    </div>
-    ${State.acctTab==="active"?renderBookingCards(active,true):renderBookingCards(past,false)}
-    <div class="pad">
-      <button class="btn primary full" onclick="App.startBooking()">YENİ RANDEVU AL</button>
-      <div style="height:10px"></div>
-      <button class="btn ghost full" onclick="App.openAdmin()">⚙️ Admin</button>
-      <div style="height:10px"></div>
-      <button class="btn danger full" onclick="App.logout()">ÇIKIŞ YAP</button>
-      <div class="hint">Girişli: <b>${escapeHtml(me.name)}</b> (${escapeHtml(me.phone)})</div>
-    </div>
-  `;
-}
-
-/* Admin Login */
-function AdminLogin(){
-  setTopbar("ADMİN");
-  return `
-    <div class="form">
-      <div style="font-weight:950;margin-bottom:6px">Admin Panel</div>
-      <div class="hint">PIN’i koddan değiştirebilirsin: <b>${escapeHtml(CONFIG.adminPin)}</b></div>
-    </div>
-    <div class="form">
-      <div class="field"><label>Admin PIN</label><input id="adminPin" placeholder="PIN" inputmode="numeric"></div>
-      <button class="btn primary full" onclick="App.adminLogin()">GİR</button>
-    </div>
-  `;
-}
-function AdminSubTabs(){
-  const t=State.adminTab;
-  const chip=(id,label)=>`<div class="chip ${t===id?"active":""}" onclick="App.setAdminTab('${id}')">${label}</div>`;
-  return `
-    <div class="subtabs">
-      ${chip("services","Hizmetler")}
-      ${chip("staff","Personel")}
-      ${chip("bookings","Randevular")}
-      ${chip("customers","Müşteriler")}
-      ${chip("gallery","Galeri")}
-      ${chip("reports","Raporlar")}
-      ${chip("settings","Ayarlar")}
-    </div>
-  `;
-}
-
-/* Admin Panels */
-function AdminPanel(){
-  setTopbar("ADMİN PANEL");
-  if(!State.isAdmin) return `<div class="section"><div style="font-weight:950">Yetki yok</div></div>`;
-  return `
-    ${AdminSubTabs()}
-    ${State.adminTab==="services" ? AdminServices() : ""}
-    ${State.adminTab==="staff" ? AdminStaff() : ""}
-    ${State.adminTab==="bookings" ? AdminBookings() : ""}
-    ${State.adminTab==="customers" ? AdminCustomers() : ""}
-    ${State.adminTab==="gallery" ? AdminGallery() : ""}
-    ${State.adminTab==="reports" ? AdminReports() : ""}
-    ${State.adminTab==="settings" ? AdminSettings() : ""}
-    <div class="pad"><button class="btn ghost full" onclick="App.adminLogout()">ADMİN ÇIKIŞ</button></div>
-  `;
-}
-
-function AdminServices(){
-  const services=Store.getServices();
-  const editing=State.editServiceId ? services.find(s=>s.id===State.editServiceId) : null;
-  return `
-    <div class="rowTitle">Hizmet Yönetimi</div>
-    <div class="form">
-      <div class="field"><label>Hizmet Adı</label><input id="as_name" value="${escapeAttr(editing?.name||"")}" placeholder="Örn: Saç + Sakal"></div>
-      <div style="display:flex; gap:10px">
-        <div style="flex:1" class="field"><label>Fiyat (₺)</label><input id="as_price" inputmode="numeric" value="${editing?.price??""}" placeholder="500"></div>
-        <div style="flex:1" class="field"><label>Süre (dk)</label><input id="as_dur" inputmode="numeric" value="${editing?.duration??""}" placeholder="60"></div>
-      </div>
-      ${State.editServiceId ? `
-        <div style="display:flex; gap:10px">
-          <button class="btn primary full" style="flex:1" onclick="App.saveServiceEdit()">KAYDET</button>
-          <button class="btn ghost full" style="flex:1" onclick="App.cancelServiceEdit()">İPTAL</button>
-        </div>` : `
-        <button class="btn primary full" onclick="App.addService()">HİZMET EKLE</button>`}
-      <div class="hint">Hizmet silersen, eski randevuların isimleri randevu içinde saklı kalır.</div>
-    </div>
-
-    <div class="list">
-      ${services.map(s=>`
-        <div class="row">
-          <div><div class="name" style="color:#2b2b2b">${escapeHtml(s.name)}</div><div class="meta">${s.duration} dk • ${currencyTry(s.price)}</div></div>
-          <div style="display:flex; gap:8px">
-            <button class="btn ghost sm" onclick="App.editService('${s.id}')">Düzenle</button>
-            <button class="btn ghost sm" onclick="App.delService('${s.id}')">Sil</button>
-          </div>
-        </div>`).join("")}
-    </div>
-  `;
-}
-
-function AdminStaff(){
-  const staff=Store.getStaff();
-  const editing=State.editStaffId ? staff.find(s=>s.id===State.editStaffId) : null;
-  return `
-    <div class="rowTitle">Personel Yönetimi</div>
-    <div class="form">
-      <div class="field"><label>Personel Adı</label><input id="ap_name" value="${escapeAttr(editing?.name||"")}" placeholder="Örn: Usta 4"></div>
-      <div class="field"><label>Rol</label><input id="ap_role" value="${escapeAttr(editing?.role||"")}" placeholder="Örn: Berber"></div>
-      ${State.editStaffId ? `
-        <div style="display:flex; gap:10px">
-          <button class="btn primary full" style="flex:1" onclick="App.saveStaffEdit()">KAYDET</button>
-          <button class="btn ghost full" style="flex:1" onclick="App.cancelStaffEdit()">İPTAL</button>
-        </div>` : `
-        <button class="btn primary full" onclick="App.addStaff()">PERSONEL EKLE</button>`}
-      <div class="hint">Personel silersen, o personelin aktif randevularını önce iptal et.</div>
-    </div>
-
-    <div class="list">
-      ${staff.map(p=>`
-        <div class="row">
-          <div><div class="name" style="color:#2b2b2b">${escapeHtml(p.name)}</div><div class="meta">${escapeHtml(p.role||"Berber")}</div></div>
-          <div style="display:flex; gap:8px">
-            <button class="btn ghost sm" onclick="App.editStaff('${p.id}')">Düzenle</button>
-            <button class="btn ghost sm" onclick="App.delStaff('${p.id}')">Sil</button>
-          </div>
-        </div>`).join("")}
-    </div>
-  `;
-}
-
-function AdminBookings(){
-  const all=Store.getBookings().slice().sort((a,b)=>(b.date+" "+b.time).localeCompare(a.date+" "+a.time));
-  const q=(State.adminSearch||"").toLowerCase().trim();
-  const flt=State.adminBookingFilter;
-  const filtered=all.filter(b=>{
-    if(flt!=="all" && b.status!==flt) return false;
-    if(!q) return true;
-    const hay=[b.customerName,b.customerPhone,b.staffName,(b.serviceNames||[]).join(" "),b.date,b.time,b.endTime].join(" ").toLowerCase();
-    return hay.includes(q);
-  });
-
-  const today=ymd(new Date());
-  const todayCount=all.filter(b=>b.date===today && b.status==="active").length;
-
-  return `
-    <div class="rowTitle">Randevular</div>
-    <div class="form">
-      <div class="toolbar">
-        <input placeholder="Ara: müşteri / telefon / tarih / personel" value="${escapeAttr(State.adminSearch||"")}" oninput="App.setAdminSearch(this.value)">
-        <select onchange="App.setAdminBookingFilter(this.value)">
-          <option value="all" ${flt==="all"?"selected":""}>Tümü</option>
-          <option value="active" ${flt==="active"?"selected":""}>Aktif</option>
-          <option value="completed" ${flt==="completed"?"selected":""}>Tamamlandı</option>
-          <option value="cancelled" ${flt==="cancelled"?"selected":""}>İptal</option>
-        </select>
-      </div>
-      <div style="display:flex; gap:10px; margin-top:10px">
-        <button class="btn ghost full" style="flex:1" onclick="App.exportBookingsCSV()">Randevular CSV</button>
-        <button class="btn ghost full" style="flex:1" onclick="App.exportCustomersCSV()">Müşteriler CSV</button>
-      </div>
-      <div class="hint">Bugün aktif: <b>${todayCount}</b> • Toplam: <b>${all.length}</b></div>
-    </div>
-
-    <div class="list">
-      ${filtered.map(b=>{
-        const st = b.status==="active"?"AKTİF":(b.status==="cancelled"?"İPTAL":"TAMAMLANDI");
-        const c = b.status==="active"?"var(--ok)":(b.status==="cancelled"?"var(--danger)":"var(--gold)");
-        return `
-        <div class="row" style="align-items:flex-start">
-          <div style="max-width:72%">
-            <div style="font-weight:950;color:#2b2b2b">${escapeHtml(b.customerName||"-")} <span style="color:#8c8c8c">(${escapeHtml(b.customerPhone||"")})</span></div>
-            <div class="meta"><b>${escapeHtml(b.date)}</b> ${escapeHtml(b.time)}-${escapeHtml(b.endTime)} • ${escapeHtml(b.staffName||"-")}</div>
-            <div class="meta">${escapeHtml((b.serviceNames||[]).join(" + ")||"")} • Ücret: <b>${currencyTry(b.totalPrice||0)}</b></div>
-            <div class="meta">Durum: <b style="color:${c}">${st}</b></div>
-          </div>
-          <div style="display:flex; flex-direction:column; gap:8px; min-width:110px">
-            ${b.status==="active" ? `<button class="btn ghost sm" onclick="App.adminMarkCompleted('${b.id}')">Tamamla</button>` : ``}
-            ${b.status==="active" ? `<button class="btn ghost sm" onclick="App.adminCancel('${b.id}')">İptal</button>` : ``}
-            <button class="btn ghost sm" onclick="App.adminDeleteBooking('${b.id}')">Sil</button>
-          </div>
-        </div>`;
-      }).join("")}
-    </div>
-  `;
-}
-
-function AdminCustomers(){
-  const list=Store.getCustomers().slice().sort((a,b)=>(b.createdAt||"").localeCompare(a.createdAt||""));
-  return `
-    <div class="rowTitle">Müşteriler</div>
-    <div class="form">
-      <div class="hint">Müşteriler randevu alındıkça oluşur.</div>
-      <button class="btn ghost full" onclick="App.exportCustomersCSV()">Müşteriler CSV</button>
-    </div>
-    <div class="list">
-      ${list.length ? list.map(c=>`
-        <div class="row">
-          <div>
-            <div class="name" style="color:#2b2b2b">${escapeHtml(c.name||"-")}</div>
-            <div class="meta">${escapeHtml(c.phone||"")}</div>
-          </div>
-          <div class="price" style="color:var(--gold)">${(Store.getBookings().filter(b=>b.customerId===c.id)).length}</div>
-        </div>`).join("") : `<div class="section"><div class="hint">Henüz müşteri yok.</div></div>`}
-    </div>
-  `;
-}
-
-/* ✅ Admin Galeri Yönetimi */
-function AdminGallery(){
-  const g=Store.getGallery();
-  return `
-    <div class="rowTitle">Galeri Yönetimi</div>
-    <div class="form">
-      <div style="font-weight:950; margin-bottom:8px">URL ile Fotoğraf Ekle</div>
-      <div class="field"><label>Fotoğraf URL</label><input id="g_url" placeholder="https://..."></div>
-      <div class="field"><label>Açıklama (opsiyonel)</label><input id="g_cap" placeholder="Örn: VIP Köşe"></div>
-      <button class="btn primary full" onclick="App.addGalleryUrl()">GALERİYE EKLE</button>
-      <div class="hint">En sağlam yöntem: URL ile eklemek (depolama sınırı olmaz).</div>
-    </div>
-
-    <div class="form">
-      <div style="font-weight:950; margin-bottom:8px">Fotoğraf Yükle (Cihaza Kaydeder)</div>
-      <div class="field"><label>Fotoğraf Seç</label><input id="g_file" type="file" accept="image/*"></div>
-      <div class="field"><label>Açıklama (opsiyonel)</label><input id="g_file_cap" placeholder="Örn: Saç Kesimi"></div>
-      <button class="btn primary full" onclick="App.addGalleryFile()">YÜKLE VE EKLE</button>
-      <div class="hint">Büyük fotoğraflar LocalStorage sınırına takılabilir. (URL önerilir)</div>
-    </div>
-
-    <div class="section">
-      <div style="font-weight:950; margin-bottom:8px">Mevcut Fotoğraflar (${g.length})</div>
-      ${g.length ? `
-        <div class="ggrid">
-          ${g.map(x=>`
-            <div class="gitem">
-              <div class="gdel" onclick="App.delGallery('${x.id}')">Sil</div>
-              <img src="${escapeAttr(x.src)}" alt="">
-              ${x.caption ? `<div class="gcap">${escapeHtml(x.caption)}</div>` : ``}
-            </div>`).join("")}
-        </div>
-      ` : `<div class="hint">Henüz galeri boş.</div>`}
-    </div>
-  `;
-}
-
-function AdminReports(){
-  return `
-    <div class="rowTitle">Raporlar</div>
-    <div class="form">
-      <button class="btn ghost full" onclick="App.exportBookingsCSV()">Randevular CSV</button>
-      <div style="height:10px"></div>
-      <button class="btn ghost full" onclick="App.exportCustomersCSV()">Müşteriler CSV</button>
-      <div class="hint">CSV dosyalarını Excel’de açabilirsin.</div>
-    </div>
-  `;
-}
-
-function AdminSettings(){
-  return `
-    <div class="rowTitle">Ayarlar</div>
-    <div class="form">
-      <div class="hint">⚠️ Bu işlem tüm verileri sıfırlar (hizmetler/personel/randevular/galeri).</div>
-      <button class="btn danger full" onclick="App.resetAll()">TÜM VERİLERİ SIFIRLA</button>
-    </div>
-  `;
-}
-
-/* =========================
-   8) APP ACTIONS
-========================= */
-const App={
-  nav(route){
-    const map={
-      home:"home",
-      services:"services",
-      staff:"staff",
-      contact:"contact",
-      where:"where",
-      gallery:"gallery",
-      account:"account",
-      book_services:"book_services",
-      admin:"admin_login",
-      admin_panel:"admin_panel"
-    };
-    if(route==="logout"){App.logout(); return;}
-    push(map[route]||route);
-  },
-
-  startBooking(){ push("book_services"); },
-  resetBooking(){ State.bookingDraft={serviceIds:[], date:null, staffId:null, time:null}; toast("Sıfırlandı"); render(); },
-  toggleService(id){
-    const s=new Set(State.bookingDraft.serviceIds);
-    s.has(id)?s.delete(id):s.add(id);
-    State.bookingDraft.serviceIds=[...s];
-    render();
-  },
-  nextBooking(){
-    if(!State.bookingDraft.serviceIds.length){ toast("En az 1 hizmet seç"); return; }
-    push("book_pick");
-  },
-  setDate(ds){ State.bookingDraft.date=ds; State.bookingDraft.time=null; render(); },
-  setStaff(id){ State.bookingDraft.staffId=id; State.bookingDraft.time=null; render(); },
-  setTime(t){ State.bookingDraft.time=t; render(); },
-
-  finishBooking(){
-    const services=Store.getServices();
-    const staff=Store.getStaff();
-    const selectedServices=State.bookingDraft.serviceIds.map(id=>services.find(s=>s.id===id)).filter(Boolean);
-    const totalDur=sum(selectedServices.map(s=>s.duration))||30;
-    const totalPrice=sum(selectedServices.map(s=>s.price))||0;
-    const date=State.bookingDraft.date;
-    const staffId=State.bookingDraft.staffId;
-    const time=State.bookingDraft.time;
-
-    if(!date||!staffId||!time){ toast("Tarih / personel / saat seç"); return; }
-
-    const slots=generateSlots(date, staffId, totalDur, 15);
-    if(!slots.includes(time)){ toast("Bu saat dolu veya uygun değil"); return; }
-
-    // login yoksa önce login
-    const me=Store.getMe();
-    if(!me){
-      State.pendingFinalize=true;
-      toast("Önce giriş yap", "Hesabım ekranına yönlendirildi");
-      push("account");
-      return;
-    }
-
-    const endTime=fromMin(toMin(time)+totalDur);
-    const st=staff.find(x=>x.id===staffId);
-    const booking={
-      id:"bk_"+Math.random().toString(16).slice(2,10),
-      status:"active",
-      createdAt:new Date().toISOString(),
-      customerId:me.id,
-      customerName:me.name,
-      customerPhone:me.phone,
-      staffId, staffName:st?.name||"",
-      date, time, endTime,
-      serviceIds:[...State.bookingDraft.serviceIds],
-      serviceNames:selectedServices.map(s=>s.name),
-      totalDuration:totalDur,
-      totalPrice
+    // --- PWA MANTIĞI ---
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault(); deferredPrompt = e;
+        document.getElementById('btnPWA').style.display = 'block';
+    });
+    document.getElementById('btnPWA').onclick = async () => {
+        if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; }
     };
 
-    try{
-      Store.addBooking(booking);
-      toast("Randevu oluşturuldu ✅", `${date} ${time} - ${endTime}`);
-      State.bookingDraft={serviceIds:[], date:null, staffId:null, time:null};
-      State.acctTab="active";
-      push("account");
-    }catch(e){
-      toast("Bu saat dolu ❌", "Başka saat seç");
-    }
-  },
+    // --- GİRİŞ / KAYIT / ŞİFRE ---
+    window.doLogin = async () => {
+        const phone = document.getElementById("loginPhone").value.replace(/\D/g, "").slice(-10);
+        const pass = document.getElementById("loginPass").value;
+        
+        // ADMIN KONTROLÜ (Örn: Senin numaran admin olsun)
+        if(phone === "5350000000" && pass === "admin123") {
+            showAdminMode();
+            return;
+        }
 
-  login(){
-    const name=$("#inName")?.value?.trim();
-    const phone=$("#inPhone")?.value?.trim();
-    if(!name||!phone){ toast("Ad ve telefon gir"); return; }
-    const c=Store.upsertCustomer({name, phone});
-    Store.setMe({id:c.id, name:c.name, phone:c.phone});
-    toast("Giriş yapıldı ✅");
-    // Eğer randevu tamamlamak için geldiyse
-    if(State.pendingFinalize){
-      State.pendingFinalize=false;
-      push("book_pick");
-      return;
-    }
-    render();
-  },
-  logout(){
-    Store.clearMe();
-    State.isAdmin=false;
-    toast("Çıkış yapıldı");
-    goHome();
-  },
-  setAcctTab(t){ State.acctTab=t; render(); },
-  cancelBooking(id){
-    if(!confirmSafe("Randevuyu iptal etmek istiyor musun?")) return;
-    Store.updateBooking(id, {status:"cancelled", cancelledAt:new Date().toISOString()});
-    toast("Randevu iptal edildi");
-    render();
-  },
-
-  openAdmin(){ push("admin_login"); },
-  adminLogin(){
-    const pin=$("#adminPin")?.value?.trim();
-    if(pin!==CONFIG.adminPin){ toast("PIN yanlış ❌"); return; }
-    State.isAdmin=true;
-    State.adminTab="services";
-    push("admin_panel");
-    toast("Admin giriş ✅");
-  },
-  adminLogout(){ State.isAdmin=false; toast("Admin çıkış"); goHome(); },
-
-  setAdminTab(t){ State.adminTab=t; render(); },
-  setAdminSearch(v){ State.adminSearch=v; render(); },
-  setAdminBookingFilter(v){ State.adminBookingFilter=v; render(); },
-
-  /* Services */
-  addService(){
-    const name=$("#as_name").value.trim();
-    const price=Number($("#as_price").value||0);
-    const dur=Number($("#as_dur").value||0);
-    if(!name||!price||!dur){ toast("Ad/Fiyat/Süre doldur"); return; }
-    const list=Store.getServices();
-    list.push({id:"svc_"+Math.random().toString(16).slice(2,10), name, price, duration:dur});
-    Store.setServices(list);
-    $("#as_name").value=""; $("#as_price").value=""; $("#as_dur").value="";
-    toast("Hizmet eklendi ✅");
-    render();
-  },
-  editService(id){ State.editServiceId=id; render(); },
-  cancelServiceEdit(){ State.editServiceId=null; render(); },
-  saveServiceEdit(){
-    const list=Store.getServices();
-    const s=list.find(x=>x.id===State.editServiceId);
-    if(!s){State.editServiceId=null;render();return;}
-    const name=$("#as_name").value.trim();
-    const price=Number($("#as_price").value||0);
-    const dur=Number($("#as_dur").value||0);
-    if(!name||!price||!dur){ toast("Ad/Fiyat/Süre doldur"); return; }
-    s.name=name; s.price=price; s.duration=dur;
-    Store.setServices(list);
-    State.editServiceId=null;
-    toast("Kaydedildi ✅");
-    render();
-  },
-  delService(id){
-    if(!confirmSafe("Bu hizmet silinsin mi?")) return;
-    Store.setServices(Store.getServices().filter(s=>s.id!==id));
-    toast("Silindi");
-    render();
-  },
-
-  /* Staff */
-  addStaff(){
-    const name=$("#ap_name").value.trim();
-    const role=$("#ap_role").value.trim();
-    if(!name){ toast("Personel adı gir"); return; }
-    const list=Store.getStaff();
-    list.push({id:"st_"+Math.random().toString(16).slice(2,10), name, role: role||"Berber"});
-    Store.setStaff(list);
-    $("#ap_name").value=""; $("#ap_role").value="";
-    toast("Personel eklendi ✅");
-    render();
-  },
-  editStaff(id){ State.editStaffId=id; render(); },
-  cancelStaffEdit(){ State.editStaffId=null; render(); },
-  saveStaffEdit(){
-    const list=Store.getStaff();
-    const p=list.find(x=>x.id===State.editStaffId);
-    if(!p){State.editStaffId=null;render();return;}
-    const name=$("#ap_name").value.trim();
-    const role=$("#ap_role").value.trim();
-    if(!name){ toast("Personel adı gir"); return; }
-    p.name=name; p.role=role||"Berber";
-    Store.setStaff(list);
-    State.editStaffId=null;
-    toast("Kaydedildi ✅");
-    render();
-  },
-  delStaff(id){
-    const active=Store.getBookings().some(b=>b.staffId===id && b.status==="active");
-    if(active){ toast("Bu personelin aktif randevusu var!", "Önce iptal/tamamla"); return; }
-    if(!confirmSafe("Personel silinsin mi?")) return;
-    Store.setStaff(Store.getStaff().filter(p=>p.id!==id));
-    toast("Silindi");
-    render();
-  },
-
-  /* Bookings admin */
-  adminCancel(id){
-    if(!confirmSafe("Randevu iptal edilsin mi?")) return;
-    Store.updateBooking(id,{status:"cancelled", cancelledAt:new Date().toISOString()});
-    toast("İptal edildi");
-    render();
-  },
-  adminMarkCompleted(id){
-    Store.updateBooking(id,{status:"completed", completedAt:new Date().toISOString()});
-    toast("Tamamlandı ✅");
-    render();
-  },
-  adminDeleteBooking(id){
-    if(!confirmSafe("Randevu tamamen silinsin mi?")) return;
-    Store.deleteBooking(id);
-    toast("Silindi");
-    render();
-  },
-
-  /* CSV */
-  exportBookingsCSV(){
-    const rows=[["ID","Durum","Tarih","Başlangıç","Bitiş","Personel","Müşteri","Telefon","Hizmetler","Süre(dk)","Tutar(₺)","Oluşturma"]];
-    Store.getBookings().forEach(b=>{
-      rows.push([b.id,b.status,b.date,b.time,b.endTime,b.staffName,b.customerName,b.customerPhone,(b.serviceNames||[]).join(" + "),b.totalDuration,b.totalPrice,b.createdAt]);
-    });
-    downloadCSV("randevular.csv", rows);
-    toast("CSV indirildi");
-  },
-  exportCustomersCSV(){
-    const rows=[["ID","Ad","Telefon","Oluşturma","Randevu Sayısı"]];
-    const bookings=Store.getBookings();
-    Store.getCustomers().forEach(c=>{
-      rows.push([c.id,c.name,c.phone,c.createdAt, bookings.filter(b=>b.customerId===c.id).length]);
-    });
-    downloadCSV("musteriler.csv", rows);
-    toast("CSV indirildi");
-  },
-
-  /* Gallery admin */
-  addGalleryUrl(){
-    const url=$("#g_url").value.trim();
-    const cap=$("#g_cap").value.trim();
-    if(!url){ toast("URL gir"); return; }
-    Store.addGalleryItem({id:"g_"+Math.random().toString(16).slice(2,10), src:url, caption:cap, createdAt:new Date().toISOString()});
-    $("#g_url").value=""; $("#g_cap").value="";
-    toast("Galeriye eklendi ✅");
-    render();
-  },
-  async addGalleryFile(){
-    const input=$("#g_file");
-    const cap=$("#g_file_cap").value.trim();
-    const file=input.files?.[0];
-    if(!file){ toast("Fotoğraf seç"); return; }
-
-    // Basit küçültme (max 900px) -> dataURL
-    const dataUrl = await new Promise((resolve,reject)=>{
-      const img=new Image();
-      const fr=new FileReader();
-      fr.onload=()=>{ img.src=fr.result; };
-      fr.onerror=reject;
-      img.onload=()=>{
-        const max=900;
-        const w=img.width, h=img.height;
-        const ratio=Math.min(1, max/Math.max(w,h));
-        const cw=Math.round(w*ratio), ch=Math.round(h*ratio);
-        const canvas=document.createElement("canvas");
-        canvas.width=cw; canvas.height=ch;
-        const ctx=canvas.getContext("2d");
-        ctx.drawImage(img,0,0,cw,ch);
-        resolve(canvas.toDataURL("image/jpeg",0.82));
-      };
-      img.onerror=reject;
-      fr.readAsDataURL(file);
-    });
-
-    try{
-      Store.addGalleryItem({id:"g_"+Math.random().toString(16).slice(2,10), src:dataUrl, caption:cap, createdAt:new Date().toISOString()});
-      $("#g_file").value=""; $("#g_file_cap").value="";
-      toast("Yüklendi ✅");
-      render();
-    }catch(e){
-      toast("Depolama dolu olabilir", "URL ile eklemeyi dene");
-    }
-  },
-  delGallery(id){
-    if(!confirmSafe("Fotoğraf silinsin mi?")) return;
-    Store.deleteGalleryItem(id);
-    toast("Silindi");
-    render();
-  },
-
-  resetAll(){
-    if(!confirmSafe("TÜM VERİLER SIFIRLANSIN MI?")) return;
-    Store.resetAll();
-    State.isAdmin=false;
-    toast("Sıfırlandı");
-    goHome();
-  }
-};
-
-/* =========================
-   9) RENDER
-========================= */
-function render(){
-  // topbar görünümü
-  const topbar=$("#topbar");
-  const content=$("#content");
-  if(State.route==="home"){
-    topbar.classList.add("hidden"); content.classList.add("full");
-  }else{
-    topbar.classList.remove("hidden"); content.classList.remove("full");
-  }
-
-  let html="";
-  switch(State.route){
-    case "home": html=Home(); break;
-    case "services": html=Services(); break;
-    case "staff": html=Staff(); break;
-    case "contact": html=Contact(); break;
-    case "where": html=Where(); break;
-    case "gallery": html=Gallery(); break;
-    case "account": html=Account(); break;
-    case "book_services": html=BookServices(); break;
-    case "book_pick": html=BookPick(); break;
-    case "admin_login": html=AdminLogin(); break;
-    case "admin_panel": html=AdminPanel(); break;
-    default: html=Home(); break;
-  }
-  content.innerHTML=html;
-
-  // topbar title
-  if(State.route==="home"){ setTopbar(""); }
-  else{
-    const titles={
-      services:"HİZMETLERİMİZ", staff:"PERSONELİMİZ", contact:"İLETİŞİM", where:"NEREDEYİZ",
-      gallery:"GALERİ", account:"HESABIM", book_services:"RANDEVU AL", book_pick:"RANDEVU AL",
-      admin_login:"ADMİN", admin_panel:"ADMİN PANEL"
+        const snap = await getDoc(doc(db, COL.cust, phone));
+        if (snap.exists() && snap.data().pass === pass) {
+            startSession(snap.data());
+        } else {
+            showToast("Hatalı bilgiler!", "err");
+        }
     };
-    setTopbar(titles[State.route]||"");
-  }
 
-  // scroll to top
-  content.scrollTop=0;
-}
+    window.forgotPasswordOTP = async () => {
+        const phone = document.getElementById("loginPhone").value.replace(/\D/g, "").slice(-10);
+        if(phone.length < 10) return showToast("Telefon girin!", "err");
+        
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        window.open(`https://wa.me/90${phone}?text=Ahmet Tekeli Şifre Kodunuz: *${otp}*`, '_blank');
+        
+        setTimeout(async () => {
+            const input = prompt("Kodu girin:");
+            if(input == otp) {
+                const newP = prompt("Yeni şifreniz:");
+                await updateDoc(doc(db, COL.cust, phone), { pass: newP });
+                showToast("Şifre güncellendi!", "ok");
+            }
+        }, 1000);
+    };
 
-/* =========================
-   10) INIT
-========================= */
-Store.init();
-$("#backBtn").addEventListener("click", ()=>back());
-$("#homeBtn").addEventListener("click", ()=>goHome());
-render();
+    // --- ADMIN FONKSİYONLARI ---
+    window.showAdminTab = (tabId) => {
+        document.querySelectorAll('.adm-sec').forEach(s => s.style.display = 'none');
+        document.getElementById(tabId).style.display = 'block';
+        if(tabId === 'adm-stock') loadStock();
+        if(tabId === 'adm-barbers') loadBarberData();
+    };
+
+    window.updateStock = async () => {
+        const item = document.getElementById("stockItem").value;
+        const qty = parseInt(document.getElementById("stockQty").value);
+        await setDoc(doc(db, COL.stock, item), { item, qty, updatedAt: new Date() });
+        loadStock();
+    };
+
+    async function loadStock() {
+        const snap = await getDocs(collection(db, COL.stock));
+        let h = "<table><tr><th>Ürün</th><th>Adet</th><th>Durum</th></tr>";
+        snap.forEach(d => {
+            const s = d.data();
+            const color = s.qty < 5 ? "red" : "green";
+            h += `<tr><td>${s.item}</td><td style="color:${color}">${s.qty}</td><td>${s.qty < 5 ? 'AZALDI' : 'TAMAM'}</td></tr>`;
+        });
+        document.getElementById("stock-list").innerHTML = h + "</table>";
+    }
+
+    // --- YARDIMCI ---
+    function showToast(m, type) {
+        const t = document.getElementById("toast");
+        t.innerText = m; t.style.background = type === "err" ? "#e74c3c" : "#28a745";
+        t.style.display = "block"; setTimeout(() => t.style.display = "none", 3000);
+    }
+    window.toggleAuth = (reg) => {
+        document.getElementById("cust-login").style.display = reg ? "none" : "block";
+        document.getElementById("cust-register").style.display = reg ? "block" : "none";
+    };
+    function startSession(user) {
+        document.getElementById("customer-container").style.display = "block";
+        document.getElementById("cust-login").style.display = "none";
+        document.getElementById("cust-panel").style.display = "block";
+        document.getElementById("welcomeName").innerText = user.name;
+        localStorage.setItem("userPhone", user.phone);
+    }
+    function showAdminMode() {
+        document.getElementById("customer-container").style.display = "none";
+        document.getElementById("admin-container").style.display = "block";
+    }
+    window.doLogout = () => { localStorage.clear(); location.reload(); };
+
 </script>
 </body>
 </html>
