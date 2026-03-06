@@ -3,181 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ahmet Tekeli | Pro Enterprise v12</title>
+    <title>Ahmet Tekeli | Premium Barber v13</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #1e3a8a; --gold: #d4a373; --gold-dark: #a67c52; }
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: #f8fafc; overflow-x: hidden; }
+        :root { --primary: #1e3a8a; --gold: #d4a373; --gold-dark: #a67c52; --bg-admin: #f8fafc; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; overflow-x: hidden; }
         
-        /* Müşteri Ekranı Cam Efekti */
+        /* --- MÜŞTERİ EKRANI (GÖRSELDEKİ SİMETRİ & GLASSMORPHISM) --- */
         .client-bg {
             background: url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=2070') no-repeat center center fixed;
             background-size: cover; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative;
         }
-        .client-bg::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.7); }
+        .client-bg::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.6); }
         
+        /* Görseldeki Buzlu Cam Kart */
         .glass-card {
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 40px; padding: 40px; width: 92%; max-width: 480px; z-index: 10;
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 40px; padding: 40px; width: 92%; max-width: 480px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); position: relative; z-index: 10;
         }
 
-        .input-box { background: white; border-radius: 14px; padding: 12px 16px; width: 100%; height: 50px; border: 1px solid #e2e8f0; font-size: 14px; color: var(--primary); font-weight: 500; }
+        /* Görseldeki Input Stilleri */
+        .input-box {
+            background: rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 12px 16px; width: 100%;
+            color: var(--primary); font-size: 14px; height: 50px; border: none; font-weight: 500;
+        }
 
-        /* Admin Paneli Simetrik Navigasyon */
+        /* Görseldeki Altın Sarısı Buton */
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: white; font-weight: 700; width: 100%; padding: 16px; border-radius: 16px;
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+        }
+        .btn-gold:active { transform: scale(0.97); }
+
+        /* --- ADMIN PANEL SİMETRİ STİLLERİ --- */
         .admin-nav-btn {
             background: white; border: 1px solid #e2e8f0; border-radius: 20px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            aspect-ratio: 1/1; gap: 6px; font-weight: 700; font-size: 10px; color: #64748b; transition: 0.3s;
+            aspect-ratio: 1/1; gap: 8px; font-weight: 700; font-size: 11px; color: #64748b;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .admin-nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-3px); }
+        .admin-nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(30,58,138,0.2); }
 
-        .slot { background: white; border-radius: 12px; padding: 10px; text-align: center; font-size: 13px; font-weight: 600; color: var(--primary); cursor: pointer; transition: 0.2s; border: 1px solid #f1f5f9; }
-        .slot-selected { background: var(--primary) !important; color: white !important; border-color: var(--primary); }
-        .slot-busy { opacity: 0.2; text-decoration: line-through; pointer-events: none; background: #cbd5e1; }
-        
         .admin-card { background: white; border-radius: 24px; padding: 24px; border: 1px solid #e2e8f0; height: 100%; }
+        
+        /* Slot Tasarımı */
+        .slot {
+            background: rgba(255, 255, 255, 0.8); border-radius: 10px; padding: 10px; text-align: center;
+            font-size: 13px; font-weight: 600; color: var(--primary); cursor: pointer; transition: 0.2s;
+        }
+        .slot-selected { background: var(--primary) !important; color: white !important; }
+        .slot-busy { opacity: 0.2; text-decoration: line-through; pointer-events: none; background: rgba(255, 255, 255, 0.4); }
+
         .hidden { display: none; }
+        ::-webkit-scrollbar { display: none; } /* Scroll bar'ı gizle */
     </style>
 </head>
 <body>
 
     <div id="clientUI" class="client-bg">
-        <button onclick="openM('searchM')" class="fixed top-6 left-6 bg-white/90 px-4 py-2 rounded-xl text-[10px] font-black text-blue-900 z-50 shadow-lg">RANDEVU SORGULA</button>
-        <button onclick="openM('authM')" class="fixed top-6 right-6 bg-white/90 px-4 py-2 rounded-xl text-[10px] font-black text-blue-900 z-50 shadow-lg">YÖNETİCİ</button>
-        
+        <button onclick="openM('searchM')" class="fixed top-6 left-6 bg-white/90 p-3 rounded-xl text-[10px] font-black text-blue-900 z-50">SORGULA</button>
+        <button onclick="openM('authM')" class="fixed top-6 right-6 bg-white/90 p-3 rounded-xl text-[10px] font-black text-blue-900 z-50">ADMİN</button>
+
         <div class="glass-card text-center">
-            <h1 class="text-4xl font-black text-white tracking-tighter uppercase mb-2 italic">AHMET TEKELİ</h1>
-            <p class="text-white/50 text-[9px] tracking-[6px] uppercase font-light mb-8">Premium Barber Experience</p>
+            <div class="absolute -top-16 left-1/2 -translate-x-1/2">
+                <img src="logo.png" class="w-32 h-32 rounded-full border-4 border-white shadow-2xl" onerror="this.src='https://via.placeholder.com/150?text=AT'">
+            </div>
             
-            <div class="space-y-4 text-left">
-                <input type="text" id="cName" placeholder="Adınız Soyadınız" class="input-box">
-                <input type="tel" id="cPhone" placeholder="05XX XXX XX XX" class="input-box">
+            <div class="mt-16 mb-8">
+                <h1 class="text-4xl font-black text-white tracking-tighter uppercase">AHMET TEKELİ</h1>
+                <p class="text-white/70 text-[10px] tracking-[6px] uppercase font-light mt-1">Premium Barber Shop</p>
+                <div class="mt-2 text-yellow-400 font-bold text-sm">⭐ 4.8 <span class="text-white/60 font-normal ml-1">(164)</span></div>
+            </div>
+
+            <div class="text-left space-y-4">
+                <div><label class="text-xs font-bold text-white ml-1">Ad Soyad</label><input type="text" id="cName" placeholder="Adınız Soyadınız" class="input-box mt-1"></div>
+                <div><label class="text-xs font-bold text-white ml-1">Telefon</label><input type="tel" id="cPhone" placeholder="05XX XXX XX XX" class="input-box mt-1"></div>
+                
                 <div class="grid grid-cols-2 gap-3">
-                    <select id="sBarber" onchange="loadSlots()" class="input-box appearance-none"></select>
-                    <select id="sService" class="input-box appearance-none"></select>
+                    <div><label class="text-xs font-bold text-white ml-1">Berber Seçimi</label><select id="sBarber" onchange="loadSlots()" class="input-box mt-1 appearance-none"></select></div>
+                    <div><label class="text-xs font-bold text-white ml-1">İşlem Seçimi</label><select id="sService" class="input-box mt-1 appearance-none"></select></div>
                 </div>
-                <input type="date" id="sDate" onchange="loadSlots()" class="input-box">
-                <div id="slotGrid" class="grid grid-cols-4 gap-2 max-h-40 overflow-y-auto p-1 bg-white/5 rounded-xl">
-                    <p class="col-span-4 text-[10px] text-white/40 italic text-center py-6">Lütfen berber ve tarih seçiniz...</p>
+
+                <div><label class="text-xs font-bold text-white ml-1">Tarih</label><input type="date" id="sDate" onchange="loadSlots()" class="input-box mt-1"></div>
+                
+                <div id="slotGrid" class="grid grid-cols-4 gap-2 max-h-40 overflow-y-auto pr-1">
+                    <p class="col-span-4 text-[10px] text-white/50 italic text-center py-4">Lütfen berber ve tarih seçiniz...</p>
                 </div>
             </div>
-            <button onclick="book()" class="w-full bg-gradient-to-r from-[#d4a373] to-[#a67c52] text-white font-bold py-4 rounded-2xl mt-8 shadow-2xl hover:scale-[1.02] transition-transform">RANDEVU OLUŞTUR</button>
+            
+            <button onclick="book()" class="btn-gold mt-8">RANDEVU AL</button>
+            
+            <p class="mt-6 text-[8px] text-white/30 uppercase tracking-[3px]">Designed by Oğuzhan Gümüş</p>
+        </div>
+    </div>
+
+    <div id="adminUI" class="fixed inset-0 bg-slate-50 hidden z-[100] overflow-y-auto">
+        <div class="bg-white border-b sticky top-0 z-10 shadow-sm">
+            <div class="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <img src="logo.png" class="w-10 h-10 rounded-full border border-slate-100" onerror="this.src='https://via.placeholder.com/50?text=AT'">
+                    <h2 class="font-bold text-slate-800">Yönetim Paneli</h2>
+                </div>
+                <button onclick="location.reload()" class="bg-red-50 text-red-500 px-6 py-2 rounded-xl text-xs font-bold">PANELİ KAPAT</button>
+            </div>
+        </div>
+
+        <div class="max-w-6xl mx-auto p-6">
+            <div class="grid grid-cols-3 md:grid-cols-6 gap-4 mb-8">
+                <button onclick="tab('t-apps')" class="admin-nav-btn active" id="btn-t-apps"><span class="text-2xl">📅</span><span>Randevular</span></button>
+                <button onclick="tab('t-users')" class="admin-nav-btn" id="btn-t-users"><span class="text-2xl">👥</span><span>Müşteriler</span></button>
+                <button onclick="tab('t-barbers')" class="admin-nav-btn" id="btn-t-barbers"><span class="text-2xl">✂️</span><span>Berberler</span></button>
+                <button onclick="tab('t-services')" class="admin-nav-btn" id="btn-t-services"><span class="text-2xl">💰</span><span>Hizmetler</span></button>
+                <button onclick="tab('t-hours')" class="admin-nav-btn" id="btn-t-hours"><span class="text-2xl">⏰</span><span>Mesai</span></button>
+                <button onclick="tab('t-gallery')" class="admin-nav-btn" id="btn-t-gallery"><span class="text-2xl">🖼️</span><span>Galeri</span></button>
+            </div>
+
+            <div class="min-h-[500px]">
+                <div id="t-apps" class="t-content block space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">Aktif Takvim</h3>
+                    <div id="list-apps" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+
+                <div id="t-barbers" class="t-content hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                        <div class="admin-card">
+                            <h4 class="font-bold mb-4 text-sm text-slate-500 uppercase">Yeni Berber Ekle</h4>
+                            <div class="space-y-4">
+                                <input type="text" id="newB" class="input-box border border-slate-100" placeholder="İsim Soyisim">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="text-[10px] font-bold text-slate-400">GİRİŞ</label><input type="time" id="newBS" class="input-box" value="09:00"></div>
+                                    <div><label class="text-[10px] font-bold text-slate-400">ÇIKIŞ</label><input type="time" id="newBE" class="input-box" value="20:00"></div>
+                                </div>
+                                <button onclick="addB()" class="btn-gold !bg-slate-800 !py-3">KAYDET</button>
+                            </div>
+                        </div>
+                        <div class="admin-card">
+                            <h4 class="font-bold mb-4 text-sm text-slate-500 uppercase">Kayıtlı Personel</h4>
+                            <div id="list-barbers" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="t-services" class="t-content hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                        <div class="admin-card">
+                            <h4 class="font-bold mb-4 text-sm text-slate-500 uppercase">Hizmet Ekle</h4>
+                            <div class="space-y-4">
+                                <input type="text" id="newSN" class="input-box border border-slate-100" placeholder="İşlem Adı">
+                                <input type="number" id="newSP" class="input-box border border-slate-100" placeholder="Fiyat (TL)">
+                                <label class="block p-4 border-2 border-dashed border-slate-200 rounded-xl text-center cursor-pointer hover:bg-slate-50">
+                                    <span class="text-xs text-slate-400" id="imgStatus">Görsel Seç</span>
+                                    <input type="file" id="newSImg" hidden onchange="processImg(this, 's')">
+                                </label>
+                                <button onclick="addS()" class="btn-gold !bg-green-600 !py-3">EKLE</button>
+                            </div>
+                        </div>
+                        <div class="admin-card">
+                            <h4 class="font-bold mb-4 text-sm text-slate-500 uppercase">İşlem Listesi</h4>
+                            <div id="list-services" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="t-gallery" class="t-content hidden">
+                    <div class="admin-card text-center p-12">
+                        <h4 class="font-bold text-slate-800 text-2xl mb-2">Salon Galerisi</h4>
+                        <p class="text-xs text-slate-400 mb-8 uppercase tracking-widest italic">Müşterilere gösterilecek fotoğraflar</p>
+                        <label class="bg-slate-800 text-white px-10 py-4 rounded-2xl font-bold cursor-pointer inline-block mb-10 shadow-xl">
+                            FOTOĞRAF YÜKLE
+                            <input type="file" id="galInput" multiple onchange="processImg(this, 'g')" hidden>
+                        </label>
+                        <div id="galGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+                    </div>
+                </div>
+
+                <div id="t-users" class="t-content hidden"><div id="list-users" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4"></div></div>
+                
+                <div id="t-hours" class="t-content hidden"><div id="hourSummary" class="max-w-xl mx-auto space-y-3"></div></div>
+            </div>
         </div>
     </div>
 
     <div id="searchM" class="fixed inset-0 bg-black/90 hidden z-[200] items-center justify-center p-4">
         <div class="bg-white rounded-[35px] p-10 w-full max-w-sm text-center shadow-2xl">
-            <h3 class="font-black text-xl text-blue-900 mb-2">Randevum Nerede?</h3>
-            <p class="text-[10px] text-slate-400 uppercase tracking-widest mb-6">Telefon numaranızla sorgulayın</p>
-            <input type="tel" id="qPhone" placeholder="05XXXXXXXXX" class="input-box mb-4 text-center border-slate-200">
-            <button onclick="find()" class="w-full bg-blue-900 text-white py-4 rounded-2xl font-bold mb-4">SORGULA</button>
-            <div id="qRes" class="hidden p-5 bg-blue-50 rounded-2xl text-sm border border-blue-100 text-blue-900 text-left space-y-1"></div>
+            <h3 class="font-bold text-xl text-blue-900 mb-4 tracking-tight">Randevum Nerede?</h3>
+            <input type="tel" id="qPhone" placeholder="05XXXXXXXXX" class="input-box border mb-4 text-center border-slate-200">
+            <button onclick="findBooking()" class="btn-gold !py-3 !mt-0">SORGULA</button>
+            <div id="searchResult" class="hidden mt-4 p-4 bg-slate-50 rounded-xl text-sm border border-slate-100 text-blue-900 text-left"></div>
             <button onclick="closeM('searchM')" class="mt-6 text-slate-400 text-xs font-bold uppercase tracking-tighter">Kapat</button>
         </div>
     </div>
 
     <div id="authM" class="fixed inset-0 bg-black/90 hidden z-[200] items-center justify-center p-4">
         <div class="bg-white rounded-[35px] p-10 w-full max-w-sm text-center shadow-2xl">
-            <h3 class="font-black text-xl text-blue-900 mb-6">ADMİN GİRİŞİ</h3>
-            <input type="password" id="adminPass" placeholder="Yönetici Şifresi" class="input-box mb-4 text-center border-slate-200">
-            <button onclick="auth()" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold mb-4">GİRİŞ YAP</button>
-            <button onclick="closeM('authM')" class="text-slate-400 text-xs font-bold uppercase">İptal</button>
-        </div>
-    </div>
-
-    <div id="adminUI" class="fixed inset-0 bg-[#f8fafc] hidden z-[300] overflow-y-auto">
-        <div class="bg-white border-b h-20 flex items-center px-8 justify-between sticky top-0 z-50 shadow-sm">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-blue-900 rounded flex items-center justify-center text-white font-black text-xs">AT</div>
-                <h2 class="font-black text-blue-900 tracking-tighter uppercase">Kontrol Paneli</h2>
-            </div>
-            <button onclick="location.reload()" class="bg-red-50 text-red-500 px-5 py-2 rounded-xl text-[10px] font-black hover:bg-red-500 hover:text-white transition-all">ÇIKIŞ YAP</button>
-        </div>
-
-        <div class="max-w-6xl mx-auto p-6">
-            <div class="grid grid-cols-3 md:grid-cols-6 gap-3 mb-8">
-                <button onclick="tab('t-apps')" class="admin-nav-btn active" id="btn-t-apps"><span>📅</span><span>Randevu</span></button>
-                <button onclick="tab('t-users')" class="admin-nav-btn" id="btn-t-users"><span>👥</span><span>Müşteri</span></button>
-                <button onclick="tab('t-barbers')" class="admin-nav-btn" id="btn-t-barbers"><span>✂️</span><span>Berber</span></button>
-                <button onclick="tab('t-services')" class="admin-nav-btn" id="btn-t-services"><span>💰</span><span>Hizmet</span></button>
-                <button onclick="tab('t-hours')" class="admin-nav-btn" id="btn-t-hours"><span>⏰</span><span>Mesai</span></button>
-                <button onclick="tab('t-gallery')" class="admin-nav-btn" id="btn-t-gallery"><span>🖼️</span><span>Galeri</span></button>
-            </div>
-
-            <div id="t-apps" class="t-content block">
-                <div class="flex justify-between items-center mb-6"><h3 class="font-black text-slate-800 uppercase tracking-tighter">Aktif Randevu Takvimi</h3></div>
-                <div id="list-apps" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-            </div>
-
-            <div id="t-barbers" class="t-content hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                    <div class="admin-card">
-                        <h4 class="font-black text-sm uppercase text-slate-400 mb-6 tracking-widest">Berber & Mesai Ekle</h4>
-                        <input type="text" id="newB" class="input-box mb-4 border-slate-100" placeholder="Berber İsim Soyisim">
-                        <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div><label class="text-[9px] font-black text-slate-400 uppercase ml-1">Açılış</label><input type="time" id="newBS" class="input-box" value="09:00"></div>
-                            <div><label class="text-[9px] font-black text-slate-400 uppercase ml-1">Kapanış</label><input type="time" id="newBE" class="input-box" value="20:00"></div>
-                        </div>
-                        <button onclick="addB()" class="w-full bg-blue-900 text-white py-4 rounded-2xl font-bold shadow-lg">SİSTEME KAYDET</button>
-                    </div>
-                    <div class="admin-card">
-                        <h4 class="font-black text-sm uppercase text-slate-400 mb-6 tracking-widest">Kayıtlı Personel</h4>
-                        <div id="list-barbers" class="space-y-3"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="t-services" class="t-content hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                    <div class="admin-card">
-                        <h4 class="font-black text-sm uppercase text-slate-400 mb-6 tracking-widest">Hizmet Tanımla</h4>
-                        <input type="text" id="newSN" class="input-box mb-2 border-slate-100" placeholder="İşlem Adı">
-                        <input type="number" id="newSP" class="input-box mb-4 border-slate-100" placeholder="Fiyat (TL)">
-                        <label class="block mb-6 p-6 border-2 border-dashed border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-50 transition-all">
-                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter" id="imgStatus">Hizmet Fotoğrafı Seç</span>
-                            <input type="file" id="newSImg" hidden onchange="processImg(this, 's')">
-                        </label>
-                        <button onclick="addS()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-bold shadow-lg">LİSTEYE EKLE</button>
-                    </div>
-                    <div class="admin-card">
-                        <h4 class="font-black text-sm uppercase text-slate-400 mb-6 tracking-widest">İşlem Listesi</h4>
-                        <div id="list-services" class="grid grid-cols-1 gap-3"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="t-gallery" class="t-content hidden">
-                <div class="admin-card text-center p-12">
-                    <h4 class="font-black text-slate-800 text-2xl mb-2">Salon Galerisi</h4>
-                    <p class="text-xs text-slate-400 mb-8 uppercase tracking-widest italic">Müşterilere gösterilecek fotoğrafları buradan yönetin</p>
-                    <label class="bg-blue-900 text-white px-10 py-4 rounded-2xl font-bold cursor-pointer inline-block mb-10 shadow-xl">
-                        FOTOĞRAF YÜKLE
-                        <input type="file" id="galInput" multiple onchange="processImg(this, 'g')" hidden>
-                    </label>
-                    <div id="galGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
-                </div>
-            </div>
-
-            <div id="t-hours" class="t-content hidden">
-                <div class="admin-card max-w-xl mx-auto">
-                    <h4 class="font-black text-slate-800 text-center mb-8 uppercase tracking-tighter">Personel Çalışma Planı</h4>
-                    <div id="hourSummary" class="space-y-4"></div>
-                </div>
-            </div>
-
-            <div id="t-users" class="t-content hidden">
-                <div class="admin-card">
-                    <h4 class="font-black text-slate-800 mb-8 uppercase tracking-widest">Müşteri Rehberi</h4>
-                    <div id="list-users" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
-                </div>
-            </div>
+            <h3 class="font-bold text-xl text-blue-900 mb-6 tracking-tight">ADMİN GİRİŞİ</h3>
+            <input type="password" id="adminPass" placeholder="Şifre" class="input-box border mb-4 text-center border-slate-200">
+            <button onclick="auth()" class="btn-gold !py-3 !mt-0">GİRİŞ YAP</button>
+            <button onclick="closeM('authM')" class="mt-6 text-slate-400 text-xs font-bold uppercase tracking-tighter">İptal</button>
         </div>
     </div>
 
     <script>
-        // --- DATA & CORE ---
-        let db = JSON.parse(localStorage.getItem('at_ultimate_v12')) || {
+        // --- SİSTEM CORE & DATA ---
+        let db = JSON.parse(localStorage.getItem('at_enterprise_v13_simetri')) || {
             barbers: [{name: 'Ahmet Tekeli', s: '09:00', e: '21:00'}],
             services: [{n: 'Saç Kesimi', p: 400, i: ''}],
             apps: [],
@@ -185,9 +216,9 @@
         };
         let tempImg = "";
 
-        const save = () => { localStorage.setItem('at_ultimate_v12', JSON.stringify(db)); render(); };
-        const openM = (id) => { document.getElementById(id).style.display = 'flex'; };
-        const closeM = (id) => { document.getElementById(id).style.display = 'none'; };
+        const save = () => { localStorage.setItem('at_enterprise_v13_simetri', JSON.stringify(db)); render(); };
+        const openM = (id) => document.getElementById(id).style.display = 'flex';
+        const closeM = (id) => document.getElementById(id).style.display = 'none';
 
         // --- GÖRSEL İŞLEME ---
         function processImg(input, type) {
@@ -196,7 +227,7 @@
             Array.from(files).forEach(file => {
                 const reader = new FileReader();
                 reader.onloadend = () => {
-                    if(type === 's') { tempImg = reader.result; document.getElementById('imgStatus').innerText = "GÖRSEL SEÇİLDİ ✅"; }
+                    if(type === 's') { tempImg = reader.result; document.getElementById('imgStatus').innerText = "SEÇİLDİ ✅"; }
                     if(type === 'g') { db.gallery.push(reader.result); save(); }
                 }
                 reader.readAsDataURL(file);
@@ -211,51 +242,7 @@
             document.getElementById('btn-'+id).classList.add('active');
         }
 
-        // --- RANDEVU SORGULAMA (MÜŞTERİ) ---
-        function find() {
-            const p = document.getElementById('qPhone').value;
-            const myApps = db.apps.filter(x => x.phone === p);
-            const r = document.getElementById('qRes');
-            r.classList.remove('hidden');
-            if(myApps.length > 0) {
-                r.innerHTML = myApps.map(a => `
-                    <div class="border-b last:border-0 pb-2 mb-2">
-                        <p class="font-black text-blue-900">${a.service}</p>
-                        <p class="text-xs text-slate-500">${a.date} | ${a.time} - ${a.barber}</p>
-                    </div>
-                `).join('');
-            } else {
-                r.innerHTML = "<p class='text-center text-red-500 font-bold'>Kayıt bulunamadı!</p>";
-            }
-        }
-
-        // --- VERİ EKLEME ---
-        function addB() {
-            const n = document.getElementById('newB').value, s = document.getElementById('newBS').value, e = document.getElementById('newBE').value;
-            if(n) { db.barbers.push({name: n, s, e}); save(); document.getElementById('newB').value=""; }
-        }
-
-        function addS() {
-            const n = document.getElementById('newSN').value, p = document.getElementById('newSP').value;
-            if(n && p) { 
-                db.services.push({n, p, i: tempImg}); 
-                tempImg = ""; 
-                document.getElementById('imgStatus').innerText = "Hizmet Fotoğrafı Seç";
-                save(); 
-                document.getElementById('newSN').value=""; 
-                document.getElementById('newSP').value=""; 
-            }
-        }
-
-        function book() {
-            const n = document.getElementById('cName').value, p = document.getElementById('cPhone').value, b = document.getElementById('sBarber').value, d = document.getElementById('sDate').value, s = document.getElementById('sService').value;
-            if(!n || !p || !window.selT) return alert("Lütfen boş alan bırakmayın ve saat seçin!");
-            db.apps.push({id: Date.now(), name: n, phone: p, barber: b, service: s, date: d, time: window.selT});
-            save(); alert("Randevunuz başarıyla oluşturuldu!"); location.reload();
-        }
-
-        function auth() { if(document.getElementById('adminPass').value === "1234") { closeM('authM'); document.getElementById('adminUI').style.display='block'; } else alert("Şifre Hatalı!"); }
-
+        // --- RANDEVU MOTORU (BERBER BAZLI SAATLER) ---
         function loadSlots() {
             const grid = document.getElementById('slotGrid');
             const d = document.getElementById('sDate').value, bName = document.getElementById('sBarber').value;
@@ -274,65 +261,69 @@
             }
         }
 
+        function book() {
+            const n = document.getElementById('cName').value, p = document.getElementById('cPhone').value, b = document.getElementById('sBarber').value, d = document.getElementById('sDate').value, s = document.getElementById('sService').value;
+            if(!n || !p || !window.selT) return alert("Lütfen eksiksiz doldurun ve saat seçin!");
+            db.apps.push({id: Date.now(), name: n, phone: p, barber: b, service: s, date: d, time: window.selT});
+            save(); alert("Randevunuz Kaydedildi!"); location.reload();
+        }
+
+        function findBooking() {
+            const p = document.getElementById('qPhone').value;
+            const myApps = db.apps.filter(x => x.phone === p);
+            const r = document.getElementById('searchResult'); r.classList.remove('hidden');
+            r.innerHTML = myApps.length > 0 ? myApps.map(a => `<b>${a.name}</b><br>${a.date} | ${a.time}<br>${a.service}`).join('<hr class="my-2">') : "Kayıt bulunamadı!";
+        }
+
+        // --- ADMIN İŞLEMLERİ ---
+        function auth() { if(document.getElementById('adminPass').value === "1234") { closeM('authM'); document.getElementById('adminUI').style.display='block'; } else alert("Hatalı!"); }
+        function addB() { const n = document.getElementById('newB').value, s = document.getElementById('newBS').value, e = document.getElementById('newBE').value; if(n) { db.barbers.push({name: n, s, e}); save(); document.getElementById('newB').value=""; } }
+        function addS() { const n = document.getElementById('newSN').value, p = document.getElementById('newSP').value; if(n && p) { db.services.push({n, p, i: tempImg}); tempImg = ""; document.getElementById('imgStatus').innerText = "Görsel Seç"; save(); document.getElementById('newSN').value=""; document.getElementById('newSP').value=""; } }
+
         // --- RENDER SİSTEMİ ---
         function render() {
             document.getElementById('sBarber').innerHTML = db.barbers.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
             document.getElementById('sService').innerHTML = db.services.map(s => `<option value="${s.n}">${s.n} (${s.p} TL)</option>`).join('');
             
-            // Randevular
+            // Admin Randevular
             document.getElementById('list-apps').innerHTML = db.apps.sort((a,b)=>a.date.localeCompare(b.date)).map(a => `
-                <div class="bg-white p-6 rounded-[25px] flex justify-between items-center shadow-sm border border-slate-50">
-                    <div><b class="text-blue-900 text-lg tracking-tighter">${a.name}</b><br><small class="text-slate-400 font-black uppercase text-[9px] tracking-widest">${a.date} | ${a.time} | ${a.barber}</small><br><span class="text-[10px] font-bold text-blue-400 uppercase">${a.service}</span></div>
-                    <button onclick="if(confirm('İptal edilsin mi?')){db.apps=db.apps.filter(x=>x.id!==${a.id}); save();}" class="text-red-200 hover:text-red-500 transition-colors">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                    </button>
+                <div class="bg-white p-4 rounded-xl flex justify-between items-center shadow-sm border border-slate-100">
+                    <div><b>${a.name}</b><br><small class="text-slate-400 font-blackuppercase tracking-widest text-[9px]">${a.date} | ${a.time} | ${a.barber}</small></div>
+                    <button onclick="db.apps=db.apps.filter(x=>x.id!==${a.id}); save();" class="text-red-500 font-bold">X</button>
                 </div>
             `).join('');
 
-            // Berberler
+            // Admin Berberler
             document.getElementById('list-barbers').innerHTML = db.barbers.map((b,i) => `
-                <div class="bg-slate-50 p-5 rounded-2xl flex justify-between items-center border border-slate-100">
-                    <div><b class="text-blue-900">${b.name}</b><br><small class="font-black text-slate-400">${b.s} - ${b.e}</small></div>
-                    <button onclick="db.barbers.splice(${i},1); save();" class="text-red-400 font-black text-[10px] uppercase">Sil</button>
+                <div class="bg-white p-4 rounded-xl flex justify-between items-center border">
+                    <div><b>${b.name}</b><br><small>${b.s} - ${b.e}</small></div>
+                    <button onclick="db.barbers.splice(${i},1); save();" class="text-red-500 text-xs">Sil</button>
                 </div>
             `).join('');
 
-            // Hizmetler
+            // Admin Hizmetler (Görselli)
             document.getElementById('list-services').innerHTML = db.services.map((s,i) => `
-                <div class="bg-white p-4 rounded-2xl flex items-center gap-4 border border-slate-100 shadow-sm">
-                    <img src="${s.i || 'https://via.placeholder.com/60'}" class="w-14 h-14 rounded-xl object-cover bg-slate-100">
-                    <div class="flex-1"><b>${s.n}</b><br><small class="text-green-600 font-black tracking-widest uppercase text-[10px]">${s.p} TL</small></div>
-                    <button onclick="db.services.splice(${i},1); save();" class="text-slate-300 hover:text-red-500">
-                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    </button>
+                <div class="bg-white p-3 rounded-xl flex items-center gap-4 border shadow-sm">
+                    <img src="${s.i || 'https://via.placeholder.com/50'}" class="w-12 h-12 rounded-lg object-cover">
+                    <div class="flex-1"><b>${s.n}</b><br><small class="text-green-600 font-bold">${s.p} TL</small></div>
+                    <button onclick="db.services.splice(${i},1); save();" class="text-red-400">Sil</button>
                 </div>
             `).join('');
 
-            // Galeri
+            // Admin Galeri
             document.getElementById('galGrid').innerHTML = db.gallery.map((img, i) => `
                 <div class="relative group aspect-square">
-                    <img src="${img}" class="w-full h-full object-cover rounded-2xl border-2 border-white shadow-md">
-                    <button onclick="db.gallery.splice(${i},1); save();" class="absolute -top-2 -right-2 bg-red-500 text-white w-6 h-6 rounded-full text-[10px] font-bold shadow-lg">X</button>
+                    <img src="${img}" class="w-full h-full object-cover rounded-xl border-2 border-white shadow">
+                    <button onclick="db.gallery.splice(${i},1); save();" class="absolute top-1 right-1 bg-red-500 text-white w-6 h-6 rounded-full text-[10px] font-bold shadow-xl">X</button>
                 </div>
             `).join('');
 
-            // Mesai Özeti
-            document.getElementById('hourSummary').innerHTML = db.barbers.map(b => `
-                <div class="flex justify-between items-center p-4 bg-white rounded-2xl border-l-4 border-l-blue-900 shadow-sm">
-                    <span class="font-bold text-slate-700">${b.name}</span>
-                    <span class="bg-blue-50 text-blue-900 px-4 py-1 rounded-full text-xs font-black tracking-widest">${b.s} — ${b.e}</span>
-                </div>
-            `).join('');
+            // Mesai Özetleri
+            document.getElementById('hourSummary').innerHTML = db.barbers.map(b => `<div class="p-3 bg-blue-50 text-blue-900 rounded-xl text-xs font-bold border border-blue-100">${b.name}: ${b.s} - ${b.e}</div>`).join('');
             
             // Müşteriler
             const clients = [...new Set(db.apps.map(a => a.phone))];
-            document.getElementById('list-users').innerHTML = clients.map(c => {
-                const u = db.apps.find(x=>x.phone===c);
-                return `<div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm text-center">
-                    <b class="text-blue-900 text-xs block truncate">${u.name}</b>
-                    <small class="text-slate-400 font-mono text-[10px]">${c}</small>
-                </div>`;
-            }).join('');
+            document.getElementById('list-users').innerHTML = clients.map(c => `<div class="bg-white p-4 rounded-xl shadow-sm border text-center"><b>${db.apps.find(x=>x.phone===c).name}</b><br><small>${c}</small></div>`).join('');
         }
         render();
     </script>
