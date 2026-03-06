@@ -3,83 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barber Pro | Takvimli Randevu</title>
+    <title>Berberim Pro | Yönetim & Randevu</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Outfit', sans-serif; background: #0f172a; color: white; }
-        .slot-busy { background: #334155 !important; color: #64748b; cursor: not-allowed; text-decoration: line-through; }
-        .slot-free { background: #1e293b; border: 1px solid #334155; cursor: pointer; }
-        .slot-free:hover { border-color: #eab308; color: #eab308; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); }
+        .slot-busy { background: #334155 !important; opacity: 0.4; cursor: not-allowed; text-decoration: line-through; }
+        .slot-free { background: #1e293b; border: 1px solid #334155; cursor: pointer; transition: 0.3s; }
+        .slot-free:hover { border-color: #eab308; color: #eab308; transform: translateY(-2px); }
         .slot-selected { background: #eab308 !important; color: black !important; font-weight: bold; }
-        .glass { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
         .hidden { display: none; }
     </style>
 </head>
-<body class="p-2 md:p-6">
+<body class="antialiased">
 
-    <div class="flex justify-between items-center max-w-4xl mx-auto mb-8 bg-slate-800/50 p-4 rounded-2xl border border-slate-700">
+    <nav class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center border-b border-slate-800">
         <div class="flex items-center gap-3">
-            <img src="logo.png" class="w-12 h-12 rounded-full border-2 border-yellow-500" onerror="this.src='https://via.placeholder.com/100?text=LOGO'">
-            <span class="font-bold text-xl tracking-wider text-yellow-500">BARBER PRO</span>
+            <img src="logo.png" class="w-10 h-10 rounded-full border border-yellow-500" onerror="this.src='https://via.placeholder.com/50'">
+            <span class="text-xl font-bold tracking-tighter text-yellow-500">BERBERİM PRO</span>
         </div>
-        <button onclick="toggleAdmin()" id="adminBtn" class="bg-slate-700 px-4 py-2 rounded-lg text-xs hover:bg-yellow-600 transition">Admin Giriş</button>
-    </div>
+        <div class="space-x-2">
+            <button onclick="showPage('customerPage')" class="text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-800">Randevu Al</button>
+            <button onclick="showPage('searchPage')" class="text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-800">Sorgula</button>
+            <button onclick="enterAdmin()" class="bg-yellow-500 text-black text-sm font-bold px-4 py-2 rounded-lg">Yönetim</button>
+        </div>
+    </nav>
 
-    <div id="customerSection" class="max-w-4xl mx-auto">
-        <div class="glass p-6 rounded-3xl mb-6">
-            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">✂️ Randevu Al</h2>
+    <main id="customerPage" class="p-4 max-w-4xl mx-auto py-10 page-section">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold mb-2">Hızlı Randevu</h1>
+            <p class="text-slate-400 font-light">İstediğin berberi ve saati seç, anında onayı kap.</p>
+        </div>
+
+        <div class="glass p-8 rounded-3xl space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" id="custName" placeholder="Adınız Soyadınız" class="w-full bg-slate-900 p-4 rounded-xl border border-slate-700 outline-none">
-                <input type="tel" id="custPhone" placeholder="Telefon Numaranız" class="w-full bg-slate-900 p-4 rounded-xl border border-slate-700 outline-none">
-                <select id="selBarber" class="bg-slate-900 p-4 rounded-xl border border-slate-700"></select>
-                <input type="date" id="selDate" onchange="renderTimeSlots()" class="bg-slate-900 p-4 rounded-xl border border-slate-700 text-white">
+                <input type="text" id="cName" placeholder="Adınız Soyadınız" class="bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none focus:border-yellow-500">
+                <input type="tel" id="cPhone" placeholder="Telefon Numaranız" class="bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none focus:border-yellow-500">
+                <select id="sBarber" onchange="renderTimeSlots()" class="bg-slate-900 border border-slate-700 p-4 rounded-xl"></select>
+                <select id="sService" class="bg-slate-900 border border-slate-700 p-4 rounded-xl"></select>
+                <input type="date" id="sDate" onchange="renderTimeSlots()" class="bg-slate-900 border border-slate-700 p-4 rounded-xl text-white">
             </div>
 
-            <div class="mt-8">
-                <h3 class="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-widest">Uygun Saatler</h3>
-                <div id="timeSlots" class="grid grid-cols-4 md:grid-cols-6 gap-2">
+            <div class="mt-6">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 block">Uygun Saatler</label>
+                <div id="timeSlotContainer" class="grid grid-cols-4 sm:grid-cols-6 gap-2">
                     </div>
             </div>
 
-            <button onclick="confirmBooking()" class="w-full mt-8 bg-yellow-500 text-black font-bold py-4 rounded-2xl text-lg hover:bg-yellow-400 transition shadow-lg shadow-yellow-500/20">RANDEVUYU TAMAMLA</button>
+            <button onclick="submitBooking()" class="w-full bg-yellow-500 text-black font-black py-5 rounded-2xl text-xl hover:bg-yellow-400 shadow-2xl shadow-yellow-500/20 transition-all">RANDEVUYU TAMAMLA</button>
+        </div>
+    </main>
+
+    <div id="searchPage" class="p-4 max-w-xl mx-auto py-20 page-section hidden text-center">
+        <div class="glass p-10 rounded-3xl">
+            <h2 class="text-2xl font-bold mb-6">Randevum Saat Kaçta?</h2>
+            <input type="tel" id="qPhone" placeholder="Telefon Numaranızı Girin" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl outline-none mb-4 text-center text-xl">
+            <button onclick="queryAppointment()" class="w-full bg-blue-600 font-bold py-4 rounded-xl hover:bg-blue-500 transition">SORGULA</button>
+            <div id="queryResult" class="mt-8 hidden p-6 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-500"></div>
         </div>
     </div>
 
-    <div id="adminSection" class="max-w-5xl mx-auto hidden animate-fade-in">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-3xl font-bold text-yellow-500">Yönetim Paneli</h2>
-            <button onclick="toggleAdmin()" class="bg-red-500 px-4 py-2 rounded-lg text-sm">Çıkış Yap</button>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2 glass p-6 rounded-3xl">
-                <h3 class="font-bold mb-4">Gelecek Randevular</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="text-slate-500 border-b border-slate-700">
-                            <tr><th class="p-2">Müşteri</th><th class="p-2">Berber</th><th class="p-2">Tarih/Saat</th><th class="p-2">İşlem</th></tr>
-                        </thead>
-                        <tbody id="adminAppTable"></tbody>
-                    </table>
-                </div>
+    <div id="adminPage" class="p-4 max-w-6xl mx-auto py-10 page-section hidden">
+        <div class="flex flex-col md:flex-row gap-6">
+            <div class="w-full md:w-64 space-y-2">
+                <button onclick="adminTab('appTable')" class="w-full text-left p-4 rounded-xl bg-slate-800 font-bold">📅 Randevular</button>
+                <button onclick="adminTab('setServices')" class="w-full text-left p-4 rounded-xl hover:bg-slate-800">✂️ Hizmet Düzenle</button>
+                <button onclick="adminTab('setBarbers')" class="w-full text-left p-4 rounded-xl hover:bg-slate-800">👤 Berberler</button>
+                <button onclick="adminTab('setHours')" class="w-full text-left p-4 rounded-xl hover:bg-slate-800">⏰ Çalışma Saatleri</button>
             </div>
 
-            <div class="space-y-6">
-                <div class="glass p-6 rounded-3xl">
-                    <h3 class="font-bold mb-4 text-yellow-500">Berber Ekle</h3>
-                    <div class="flex gap-2">
-                        <input type="text" id="newBarber" placeholder="Berber Adı" class="flex-1 bg-slate-900 p-2 rounded-lg text-sm border border-slate-700">
-                        <button onclick="addBarber()" class="bg-green-600 p-2 rounded-lg text-sm">Ekle</button>
+            <div class="flex-1 glass p-6 rounded-3xl">
+                <div id="appTable" class="admin-tab">
+                    <h3 class="text-xl font-bold mb-4">Gelecek Randevular</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="text-slate-500 border-b border-slate-800">
+                                <tr><th class="p-3">Müşteri</th><th class="p-3">Berber</th><th class="p-3">Hizmet</th><th class="p-3">Zaman</th><th class="p-3">Aksiyon</th></tr>
+                            </thead>
+                            <tbody id="adminAppsList"></tbody>
+                        </table>
                     </div>
-                    <div id="barberTags" class="mt-4 flex flex-wrap gap-2"></div>
                 </div>
-                
-                <div class="glass p-6 rounded-3xl">
-                    <h3 class="font-bold mb-4">Çalışma Saatleri</h3>
-                    <div class="flex items-center gap-2 text-sm">
-                        <input type="time" id="workStart" value="09:00" class="bg-slate-900 p-2 rounded border border-slate-700"> - 
-                        <input type="time" id="workEnd" value="20:00" class="bg-slate-900 p-2 rounded border border-slate-700">
+
+                <div id="setServices" class="admin-tab hidden">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-500">Hizmet Ekle/Değiştir</h3>
+                    <div class="flex gap-2 mb-6">
+                        <input type="text" id="nsName" placeholder="Hizmet Adı" class="flex-1 bg-slate-900 p-3 rounded-lg border border-slate-700">
+                        <input type="number" id="nsPrice" placeholder="Fiyat" class="w-24 bg-slate-900 p-3 rounded-lg border border-slate-700">
+                        <button onclick="addService()" class="bg-green-600 px-4 py-2 rounded-lg">Ekle</button>
+                    </div>
+                    <div id="adminServicesList" class="space-y-2"></div>
+                </div>
+
+                <div id="setBarbers" class="admin-tab hidden text-center">
+                   <h3 class="text-xl font-bold mb-4">Ekip Üyeleri</h3>
+                   <input type="text" id="nbName" placeholder="Berber İsmi" class="bg-slate-900 p-3 rounded-lg border border-slate-700 mb-4 w-full">
+                   <button onclick="addBarber()" class="bg-yellow-500 text-black font-bold px-8 py-2 rounded-lg mb-6">Berber Ekle</button>
+                   <div id="adminBarberList" class="grid grid-cols-2 gap-4"></div>
+                </div>
+
+                <div id="setHours" class="admin-tab hidden">
+                    <h3 class="text-xl font-bold mb-4">Mesai Saatleri</h3>
+                    <div class="flex gap-4 items-center">
+                        <div>Açılış: <input type="time" id="hStart" value="09:00" class="bg-slate-900 p-2 rounded border border-slate-700 ml-2"></div>
+                        <div>Kapanış: <input type="time" id="hEnd" value="21:00" class="bg-slate-900 p-2 rounded border border-slate-700 ml-2"></div>
+                        <button onclick="updateHours()" class="bg-blue-600 px-6 py-2 rounded-lg">Güncelle</button>
                     </div>
                 </div>
             </div>
@@ -87,104 +116,141 @@
     </div>
 
     <script>
-        // VERİ TABANI
-        let db = JSON.parse(localStorage.getItem('barber_pro_v2')) || {
-            barbers: ["Ahmet", "Mehmet"],
+        // --- SİSTEM VERİLERİ (LOCALSTORAGE) ---
+        let state = JSON.parse(localStorage.getItem('barber_os_data')) || {
+            barbers: ['Caner', 'Okan'],
+            services: [{n: 'Saç Kesimi', p: 250}, {n: 'Sakal Tasarım', p: 150}],
             appointments: [],
-            workHours: { start: "09:00", end: "20:00" }
+            hours: {start: "09:00", end: "21:00"}
         };
 
-        let selectedSlot = null;
+        let activeSlot = null;
 
-        function save() {
-            localStorage.setItem('barber_pro_v2', JSON.stringify(db));
-            renderAll();
+        function save() { localStorage.setItem('barber_os_data', JSON.stringify(state)); render(); }
+
+        // --- SAYFA YÖNETİMİ ---
+        function showPage(p) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(p).classList.remove('hidden');
         }
 
-        // DOLU/BOŞ SAATLERİ HESAPLA VE GÖSTER
+        function enterAdmin() {
+            let pass = prompt("Admin Şifresi giriniz (Varsayılan: 1234):");
+            if(pass === "1234") showPage('adminPage');
+            else alert("Hatalı Şifre!");
+        }
+
+        function adminTab(t) {
+            document.querySelectorAll('.admin-tab').forEach(x => x.classList.add('hidden'));
+            document.getElementById(t).classList.remove('hidden');
+        }
+
+        // --- TAKVİM & SAAT MANTIĞI ---
         function renderTimeSlots() {
-            const date = document.getElementById('selDate').value;
-            const barber = document.getElementById('selBarber').value;
-            const container = document.getElementById('timeSlots');
+            const container = document.getElementById('timeSlotContainer');
+            const date = document.getElementById('sDate').value;
+            const barber = document.getElementById('sBarber').value;
             container.innerHTML = "";
+            if(!date) return;
 
-            if (!date) return;
+            let start = new Date(`${date}T${state.hours.start}`);
+            let end = new Date(`${date}T${state.hours.end}`);
 
-            let current = new Date(`${date}T${db.workHours.start}`);
-            let end = new Date(`${date}T${db.workHours.end}`);
-
-            while (current < end) {
-                const timeStr = current.toTimeString().substring(0, 5);
-                const isBusy = db.appointments.some(a => a.date === date && a.time === timeStr && a.barber === barber);
+            while(start < end) {
+                let time = start.toTimeString().substring(0,5);
+                let isBusy = state.appointments.some(a => a.date === date && a.time === time && a.barber === barber);
                 
-                const btn = document.createElement('div');
-                btn.innerText = timeStr;
-                btn.className = `p-3 rounded-xl text-center transition ${isBusy ? 'slot-busy' : 'slot-free'}`;
+                let div = document.createElement('div');
+                div.innerText = time;
+                div.className = `p-3 rounded-xl text-center text-sm font-bold transition ${isBusy ? 'slot-busy' : 'slot-free'}`;
                 
-                if (!isBusy) {
-                    btn.onclick = () => {
-                        document.querySelectorAll('.slot-free').forEach(b => b.classList.remove('slot-selected'));
-                        btn.classList.add('slot-selected');
-                        selectedSlot = timeStr;
+                if(!isBusy) {
+                    div.onclick = () => {
+                        document.querySelectorAll('.slot-free').forEach(d => d.classList.remove('slot-selected'));
+                        div.classList.add('slot-selected');
+                        activeSlot = time;
                     };
                 }
-                container.appendChild(btn);
-                current.setMinutes(current.getMinutes() + 30); // 30 dakikalık aralıklar
+                container.appendChild(div);
+                start.setMinutes(start.getMinutes() + 30);
             }
         }
 
-        // RANDEVU ONAYLA
-        function confirmBooking() {
-            const name = document.getElementById('custName').value;
-            const phone = document.getElementById('custPhone').value;
-            const date = document.getElementById('selDate').value;
-            const barber = document.getElementById('selBarber').value;
+        // --- RANDEVU OLUŞTURMA ---
+        function submitBooking() {
+            const name = document.getElementById('cName').value;
+            const phone = document.getElementById('cPhone').value;
+            const barber = document.getElementById('sBarber').value;
+            const service = document.getElementById('sService').value;
+            const date = document.getElementById('sDate').value;
 
-            if (!name || !phone || !date || !selectedSlot) return alert("Lütfen tüm alanları ve saati seçin!");
+            if(!name || !phone || !activeSlot) return alert("Lütfen tüm alanları doldurun ve saat seçin!");
 
-            db.appointments.push({ id: Date.now(), name, phone, date, time: selectedSlot, barber });
+            state.appointments.push({ id: Date.now(), name, phone, barber, service, date, time: activeSlot });
             save();
-            alert(`Randevunuz ${selectedSlot} saatine ONAYLANDI!`);
-            location.reload();
+            alert(`Harika! ${activeSlot} randevun otomatik onaylandı.`);
+            showPage('searchPage');
         }
 
-        // ADMİN PANELİ GEÇİŞ
-        function toggleAdmin() {
-            const pass = document.getElementById('adminSection').classList.contains('hidden') ? prompt("Admin Şifresi (Varsayılan: 1234):") : "exit";
-            if (pass === "1234" || pass === "exit") {
-                document.getElementById('customerSection').classList.toggle('hidden');
-                document.getElementById('adminSection').classList.toggle('hidden');
+        // --- SORGULAMA ---
+        function queryAppointment() {
+            const q = document.getElementById('qPhone').value;
+            const found = state.appointments.filter(a => a.phone === q).pop();
+            const resDiv = document.getElementById('queryResult');
+            resDiv.classList.remove('hidden');
+            if(found) {
+                resDiv.innerHTML = `<p class='text-white text-sm'>Hoşgeldin <b>${found.name}</b></p>
+                                    <h4 class='text-2xl font-bold mt-2'>${found.time}</h4>
+                                    <p class='text-sm mt-1'>${found.date} | Berber ${found.barber}</p>`;
             } else {
-                alert("Hatalı şifre!");
+                resDiv.innerHTML = "Aktif randevu bulunamadı.";
             }
         }
 
-        // DİNAMİK LİSTELERİ ÇİZ
-        function renderAll() {
-            document.getElementById('selBarber').innerHTML = db.barbers.map(b => `<option value="${b}">${b}</option>`).join('');
-            document.getElementById('barberTags').innerHTML = db.barbers.map(b => `<span class="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-full text-xs">${b}</span>`).join('');
-            
-            document.getElementById('adminAppTable').innerHTML = db.appointments.sort((a,b) => a.date.localeCompare(b.date)).map(a => `
-                <tr class="border-b border-slate-800">
-                    <td class="p-3 font-bold">${a.name}<br><span class="text-xs text-slate-500">${a.phone}</span></td>
-                    <td class="p-3">${a.barber}</td>
-                    <td class="p-3 text-yellow-500">${a.date} | ${a.time}</td>
-                    <td class="p-3"><button onclick="deleteApp(${a.id})" class="text-red-500">Sil</button></td>
-                </tr>
-            `).join('');
-        }
-
-        function deleteApp(id) {
-            db.appointments = db.appointments.filter(a => a.id !== id);
-            save();
+        // --- ADMIN İŞLEMLERİ ---
+        function addService() {
+            let n = document.getElementById('nsName').value;
+            let p = document.getElementById('nsPrice').value;
+            if(n && p) { state.services.push({n, p}); save(); }
         }
 
         function addBarber() {
-            const name = document.getElementById('newBarber').value;
-            if (name) { db.barbers.push(name); document.getElementById('newBarber').value = ""; save(); }
+            let n = document.getElementById('nbName').value;
+            if(n) { state.barbers.push(n); save(); }
         }
 
-        renderAll();
+        function deleteApp(id) { state.appointments = state.appointments.filter(a => a.id !== id); save(); }
+
+        function render() {
+            // Müşteri Selectleri
+            document.getElementById('sBarber').innerHTML = state.barbers.map(b => `<option value="${b}">${b}</option>`).join('');
+            document.getElementById('sService').innerHTML = state.services.map(s => `<option value="${s.n}">${s.n} - ${s.p} TL</option>`).join('');
+
+            // Admin Listeleri
+            document.getElementById('adminAppsList').innerHTML = state.appointments.map(a => `
+                <tr class="border-b border-slate-900 text-sm">
+                    <td class="p-3"><b>${a.name}</b><br>${a.phone}</td>
+                    <td class="p-3">${a.barber}</td>
+                    <td class="p-3">${a.service}</td>
+                    <td class="p-3 text-yellow-500">${a.date} ${a.time}</td>
+                    <td class="p-3"><button onclick="deleteApp(${a.id})" class="text-red-500">Sil</button></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('adminServicesList').innerHTML = state.services.map((s, i) => `
+                <div class="flex justify-between bg-slate-800 p-3 rounded-lg"><span>${s.n} (${s.p} TL)</span>
+                <button onclick="state.services.splice(${i},1); save();" class="text-red-500">Sil</button></div>
+            `).join('');
+
+            document.getElementById('adminBarberList').innerHTML = state.barbers.map((b, i) => `
+                <div class="bg-slate-800 p-4 rounded-xl relative group">
+                    <div class="font-bold text-yellow-500">${b}</div>
+                    <button onclick="state.barbers.splice(${i},1); save();" class="text-red-500 text-xs mt-2">Kaldır</button>
+                </div>
+            `).join('');
+        }
+
+        render();
     </script>
 </body>
 </html>
