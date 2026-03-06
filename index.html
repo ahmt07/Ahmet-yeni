@@ -3,194 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ahmet Tekeli | Pro Barber v7</title>
+    <title>Ahmet Tekeli | Simetrik Yönetim</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #1e3a8a; --gold: #d4a373; --gold-dark: #a67c52; }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=2070') no-repeat center center fixed;
-            background-size: cover; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;
+        body { font-family: 'Poppins', sans-serif; background: #f1f5f9; margin: 0; overflow-x: hidden; }
+        
+        /* Simetrik Input Yapısı */
+        .input-box {
+            background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px;
+            padding: 12px 16px; width: 100%; color: var(--primary); font-size: 14px;
+            height: 48px; /* Sabit yükseklik simetri sağlar */
+            transition: all 0.2s ease;
         }
-        body::before { content: ""; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: -1; }
-        .glass-card { background: rgba(255, 255, 255, 0.22); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 40px; padding: 35px; width: 92%; max-width: 460px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); position: relative; }
-        .input-box { background: rgba(255, 255, 255, 0.95); border: none; border-radius: 14px; padding: 14px; width: 100%; color: var(--primary); font-size: 14px; font-weight: 500; }
-        .btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: white; font-weight: 700; width: 100%; padding: 16px; border-radius: 16px; text-transform: uppercase; letter-spacing: 1px; }
-        .nav-link { background: rgba(255,255,255,0.9); padding: 10px 18px; border-radius: 12px; font-weight: 700; font-size: 12px; color: var(--primary); }
-        .tab-btn { background: white; border: 1px solid #e2e8f0; border-radius: 15px; padding: 12px 5px; font-size: 11px; font-weight: 700; color: #64748b; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; }
-        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .slot { background: white; border-radius: 10px; padding: 10px; text-align: center; font-size: 13px; font-weight: 600; color: var(--primary); cursor: pointer; }
-        .slot-selected { background: var(--primary) !important; color: white !important; }
-        .slot-busy { opacity: 0.25; text-decoration: line-through; pointer-events: none; }
+        .input-box:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1); }
+
+        /* Simetrik Navigasyon Butonları */
+        .tab-btn {
+            background: white; border: 1px solid #e2e8f0; border-radius: 16px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 8px; font-weight: 700; font-size: 12px; color: #64748b;
+            aspect-ratio: 1 / 1; /* Kare butonlar simetriyi güçlendirir */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.2); }
+
+        /* Kart ve Liste Simetrisi */
+        .admin-card {
+            background: white; border-radius: 24px; padding: 24px;
+            border: 1px solid #e2e8f0; height: 100%; display: flex; flex-direction: column;
+        }
+        .list-item {
+            background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 16px;
+            padding: 16px; display: flex; justify-content: space-between; align-items: center;
+            height: 72px; /* Sabit yükseklik liste düzenini korur */
+        }
+        
+        .btn-action { height: 48px; border-radius: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; }
+
         .hidden { display: none; }
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body>
+<body class="bg-slate-50">
 
-    <button onclick="openM('searchM')" class="fixed top-6 left-6 nav-link z-50">SORGULA</button>
-    <button onclick="openM('authM')" class="fixed top-6 right-6 nav-link z-50">ADMİN</button>
-
-    <div id="mainUI" class="glass-card text-center">
-        <div class="absolute -top-16 left-1/2 -translate-x-1/2">
-            <img src="logo.png" class="w-32 h-32 rounded-full border-4 border-white shadow-2xl" onerror="this.src='https://via.placeholder.com/150?text=AT'">
-        </div>
-        <div class="mt-16 mb-6">
-            <h1 class="text-3xl font-bold text-white tracking-tight uppercase font-black">AHMET TEKELİ</h1>
-            <p class="text-white/80 text-xs tracking-[5px] uppercase font-light">Erkek Kuaförü</p>
-        </div>
-
-        <div class="text-left space-y-4">
-            <input type="text" id="cName" placeholder="Adınız Soyadınız" class="input-box">
-            <input type="tel" id="cPhone" placeholder="05XX XXX XX XX" class="input-box">
-            <div class="grid grid-cols-2 gap-3">
-                <select id="sBarber" onchange="loadSlots()" class="input-box"></select>
-                <select id="sService" class="input-box"></select>
-            </div>
-            <input type="date" id="sDate" onchange="loadSlots()" class="input-box">
-            <div id="slotGrid" class="grid grid-cols-4 gap-2 max-h-36 overflow-y-auto pr-1">
-                <p class="col-span-4 text-[10px] text-white/70 italic text-center py-4">Berber ve tarih seçiniz...</p>
+    <div class="min-h-screen pb-12">
+        
+        <div class="bg-white border-b border-slate-200 sticky top-0 z-50">
+            <div class="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
+                <div>
+                    <h1 class="text-xl font-bold text-slate-800">Yönetim Paneli</h1>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-[2px]">Ahmet Tekeli Pro v8</p>
+                </div>
+                <button onclick="window.location.reload()" class="bg-red-50 text-red-500 px-6 py-2 rounded-xl text-xs font-bold hover:bg-red-500 hover:text-white transition-all">
+                    ÇIKIŞ YAP
+                </button>
             </div>
         </div>
-        <button onclick="book()" class="btn-gold mt-6">RANDEVU AL</button>
-    </div>
 
-    <div id="adminPanel" class="fixed inset-0 bg-slate-50 hidden z-[70] overflow-y-auto">
-        <div class="max-w-5xl mx-auto p-4 md:p-10">
-            <div class="flex justify-between items-center bg-white p-6 rounded-[30px] shadow-sm mb-8">
-                <h1 class="text-2xl font-bold text-slate-800">Yönetim</h1>
-                <button onclick="closeM('adminPanel')" class="bg-red-500 text-white px-6 py-2 rounded-xl text-sm font-bold">Çıkış</button>
+        <div class="max-w-6xl mx-auto px-6 mt-8">
+            
+            <div class="grid grid-cols-3 md:grid-cols-6 gap-4 mb-8">
+                <button onclick="tab('t-apps')" class="tab-btn active" id="btn-t-apps"><span class="text-xl">📅</span><span>Randevu</span></button>
+                <button onclick="tab('t-users')" class="tab-btn" id="btn-t-users"><span class="text-xl">👥</span><span>Müşteri</span></button>
+                <button onclick="tab('t-barbers')" class="tab-btn" id="btn-t-barbers"><span class="text-xl">✂️</span><span>Berber</span></button>
+                <button onclick="tab('t-services')" class="tab-btn" id="btn-t-services"><span class="text-xl">💰</span><span>Hizmet</span></button>
+                <button onclick="tab('t-hours')" class="tab-btn" id="btn-t-hours"><span class="text-xl">⏰</span><span>Mesai</span></button>
+                <button onclick="tab('t-stats')" class="tab-btn" id="btn-t-stats"><span class="text-xl">📊</span><span>Rapor</span></button>
             </div>
 
-            <div class="grid grid-cols-3 md:grid-cols-5 gap-3 mb-8 text-center">
-                <button onclick="tab('t-apps')" class="tab-btn active" id="btn-t-apps"><span>📅</span><span>Randevu</span></button>
-                <button onclick="tab('t-users')" class="tab-btn" id="btn-t-users"><span>👥</span><span>Müşteri</span></button>
-                <button onclick="tab('t-barbers')" class="tab-btn" id="btn-t-barbers"><span>✂️</span><span>Berberler</span></button>
-                <button onclick="tab('t-services')" class="tab-btn" id="btn-t-services"><span>💰</span><span>Hizmetler</span></button>
-                <button onclick="tab('t-gallery')" class="tab-btn" id="btn-t-gallery"><span>🖼️</span><span>Galeri</span></button>
-            </div>
-
-            <div class="bg-white rounded-[35px] p-6 shadow-sm min-h-[500px]">
-                <div id="t-apps" class="t-content block"><div id="list-apps" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div></div>
-                <div id="t-users" class="t-content hidden"><div id="list-users" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div></div>
+            <div class="min-h-[600px]">
                 
-                <div id="t-barbers" class="t-content hidden">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="bg-slate-50 p-6 rounded-[25px]">
-                            <h4 class="font-bold mb-4 text-sm text-slate-500 uppercase">Berber Ekle</h4>
-                            <input type="text" id="newB" class="input-box border mb-2" placeholder="İsim Soyisim">
-                            <div class="grid grid-cols-2 gap-2 mb-4">
-                                <div><small>Açılış</small><input type="time" id="newBS" class="input-box" value="09:00"></div>
-                                <div><small>Kapanış</small><input type="time" id="newBE" class="input-box" value="20:00"></div>
-                            </div>
-                            <button onclick="addB()" class="w-full bg-[#1e3a8a] text-white py-3 rounded-xl font-bold">KAYDET</button>
+                <div id="t-apps" class="t-content block animate-in fade-in duration-300">
+                    <div class="flex justify-between items-end mb-6">
+                        <h3 class="text-lg font-bold text-slate-800">Randevu Takvimi</h3>
+                        <span class="text-xs text-slate-400" id="appCount">0 Kayıt</span>
+                    </div>
+                    <div id="list-apps" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         </div>
-                        <div id="list-barbers" class="space-y-3"></div>
+                </div>
+
+                <div id="t-barbers" class="t-content hidden animate-in fade-in duration-300">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                        <div class="admin-card">
+                            <h4 class="font-bold mb-6 text-slate-700">Yeni Berber Tanımla</h4>
+                            <div class="space-y-4">
+                                <input type="text" id="newB" class="input-box" placeholder="İsim Soyisim">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="text-[10px] font-bold text-slate-400 ml-1">BAŞLANGIÇ</label><input type="time" id="newBS" class="input-box" value="09:00"></div>
+                                    <div><label class="text-[10px] font-bold text-slate-400 ml-1">BİTİŞ</label><input type="time" id="newBE" class="input-box" value="20:00"></div>
+                                </div>
+                                <button onclick="addB()" class="btn-action w-full bg-slate-800 text-white hover:bg-black">BERBERİ KAYDET</button>
+                            </div>
+                        </div>
+                        <div class="admin-card">
+                            <h4 class="font-bold mb-6 text-slate-700">Mevcut Kadro</h4>
+                            <div id="list-barbers" class="space-y-3"></div>
+                        </div>
                     </div>
                 </div>
 
-                <div id="t-services" class="t-content hidden"><div id="list-services" class="space-y-2"></div></div>
+                <div id="t-services" class="t-content hidden animate-in fade-in duration-300">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                        <div class="admin-card">
+                            <h4 class="font-bold mb-6 text-slate-700">Hizmet/Fiyat Ekle</h4>
+                            <div class="space-y-4">
+                                <input type="text" id="newSN" class="input-box" placeholder="İşlem Adı (Örn: Saç Kesimi)">
+                                <input type="number" id="newSP" class="input-box" placeholder="Fiyat (TL)">
+                                <button onclick="addS()" class="btn-action w-full bg-green-600 text-white hover:bg-green-700">LİSTEYE EKLE</button>
+                            </div>
+                        </div>
+                        <div class="admin-card">
+                            <h4 class="font-bold mb-6 text-slate-700">Fiyat Listesi</h4>
+                            <div id="list-services" class="space-y-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="t-users" class="t-content hidden">
+                    <div class="admin-card">
+                        <h4 class="font-bold mb-6">Müşteri Rehberi</h4>
+                        <div id="list-users" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                    </div>
+                </div>
+
             </div>
-        </div>
-    </div>
-
-    <div id="searchM" class="fixed inset-0 bg-black/80 hidden z-[60] items-center justify-center p-4">
-        <div class="bg-white rounded-[35px] p-10 w-full max-w-sm text-center">
-            <input type="tel" id="qPhone" placeholder="05XXXXXXXXX" class="input-box border mb-4 text-center">
-            <button onclick="find()" class="btn-gold">SORGULA</button>
-            <div id="qRes" class="hidden mt-4 p-4 bg-blue-50 rounded-xl text-sm"></div>
-            <button onclick="closeM('searchM')" class="mt-4 text-xs text-gray-400">Kapat</button>
-        </div>
-    </div>
-
-    <div id="authM" class="fixed inset-0 bg-black/80 hidden z-[60] items-center justify-center p-4">
-        <div class="bg-white rounded-[35px] p-10 w-full max-w-sm text-center">
-            <input type="password" id="adminPass" placeholder="Şifre" class="input-box border mb-4 text-center">
-            <button onclick="auth()" class="btn-gold">GİRİŞ</button>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('at_v7_barber_hours')) || {
+        // Veri Yapısı (LocalStorage)
+        let db = JSON.parse(localStorage.getItem('at_pro_v8')) || {
             barbers: [{name: 'Ahmet Tekeli', s: '09:00', e: '20:00'}],
-            services: [{n: 'Saç Kesimi', p: 400}, {n: 'Sakal Tasarımı', p: 250}],
+            services: [{n: 'Saç Kesimi', p: 400}],
             apps: []
         };
 
-        const save = () => { localStorage.setItem('at_v7_barber_hours', JSON.stringify(db)); render(); };
-        const openM = (id) => document.getElementById(id).style.display = 'flex';
-        const closeM = (id) => document.getElementById(id).style.display = 'none';
+        const save = () => { localStorage.setItem('at_pro_v8', JSON.stringify(db)); render(); };
 
+        // Simetrik Tab Geçişi
         function tab(id) {
-            document.querySelectorAll('.t-content').forEach(c => { c.classList.replace('block', 'hidden'); });
+            document.querySelectorAll('.t-content').forEach(c => c.classList.replace('block', 'hidden'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(id).classList.replace('hidden', 'block');
             document.getElementById('btn-'+id).classList.add('active');
         }
 
-        function loadSlots() {
-            const grid = document.getElementById('slotGrid');
-            const d = document.getElementById('sDate').value, bName = document.getElementById('sBarber').value;
-            grid.innerHTML = ""; if(!d || !bName) return;
-
-            const bObj = db.barbers.find(x => x.name === bName);
-            let curr = new Date(`${d}T${bObj.s}`), end = new Date(`${d}T${bObj.e}`);
-
-            while(curr < end) {
-                let t = curr.toTimeString().substring(0,5);
-                let busy = db.apps.some(a => a.date === d && a.time === t && a.barber === bName);
-                let div = document.createElement('div');
-                div.className = `slot ${busy ? 'slot-busy' : ''}`;
-                div.innerText = t;
-                if(!busy) div.onclick = () => {
-                    document.querySelectorAll('.slot').forEach(s => s.classList.remove('slot-selected'));
-                    div.classList.add('slot-selected'); window.selT = t;
-                };
-                grid.appendChild(div);
-                curr.setMinutes(curr.getMinutes() + 30);
-            }
-        }
-
-        function book() {
-            const n = document.getElementById('cName').value, p = document.getElementById('cPhone').value, b = document.getElementById('sBarber').value, d = document.getElementById('sDate').value, s = document.getElementById('sService').value;
-            if(!n || !p || !window.selT) return alert("Eksik bilgi!");
-            db.apps.push({id: Date.now(), name: n, phone: p, barber: b, service: s, date: d, time: window.selT});
-            save(); alert("Randevunuz alındı!"); location.reload();
-        }
-
+        // Berber Ekleme
         function addB() {
             const n = document.getElementById('newB').value, s = document.getElementById('newBS').value, e = document.getElementById('newBE').value;
-            if(n) { db.barbers.push({name: n, s: s, e: e}); save(); document.getElementById('newB').value=""; }
+            if(n) { db.barbers.push({name: n, s, e}); save(); document.getElementById('newB').value=""; }
         }
 
-        function auth() { if(document.getElementById('adminPass').value === "1234") { closeM('authM'); openM('adminPanel'); } else alert("Hatalı!"); }
+        // Hizmet Ekleme
+        function addS() {
+            const n = document.getElementById('newSN').value, p = document.getElementById('newSP').value;
+            if(n && p) { db.services.push({n, p}); save(); document.getElementById('newSN').value=""; document.getElementById('newSP').value=""; }
+        }
 
+        // Render (Görsel Eşitleme)
         function render() {
-            document.getElementById('sBarber').innerHTML = db.barbers.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
-            document.getElementById('sService').innerHTML = db.services.map(s => `<option value="${s.n}">${s.n} (${s.p} TL)</option>`).join('');
-            
-            document.getElementById('list-barbers').innerHTML = db.barbers.map((b, i) => `
-                <div class="bg-white p-4 rounded-2xl border flex justify-between items-center">
-                    <div><b>${b.name}</b><br><small>${b.s} - ${b.e}</small></div>
-                    <button onclick="db.barbers.splice(${i},1); save();" class="text-red-500 text-xs">Sil</button>
-                </div>
-            `).join('');
-
+            // Randevular
+            document.getElementById('appCount').innerText = db.apps.length + " Kayıt";
             document.getElementById('list-apps').innerHTML = db.apps.sort((a,b)=>a.date.localeCompare(b.date)).map(a => `
-                <div class="bg-slate-50 p-4 rounded-xl flex justify-between">
-                    <div><b>${a.name}</b><br><small>${a.date} | ${a.time} | ${a.barber}</small></div>
-                    <button onclick="db.apps = db.apps.filter(x=>x.id!==${a.id}); save();" class="text-red-500">❌</button>
+                <div class="list-item bg-white shadow-sm border-l-4 border-l-blue-500">
+                    <div class="overflow-hidden">
+                        <b class="text-slate-800 text-sm truncate block">${a.name}</b>
+                        <small class="text-slate-400 text-[10px] uppercase font-bold">${a.date} | ${a.time} | ${a.barber}</small>
+                    </div>
+                    <button onclick="db.apps = db.apps.filter(x=>x.id!==${a.id}); save();" class="text-red-400 p-2 hover:bg-red-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
                 </div>
             `).join('');
 
+            // Berber Listesi
+            document.getElementById('list-barbers').innerHTML = db.barbers.map((b, i) => `
+                <div class="list-item">
+                    <div>
+                        <b class="text-slate-800 text-sm">${b.name}</b>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase">${b.s} - ${b.e}</p>
+                    </div>
+                    <button onclick="db.barbers.splice(${i},1); save();" class="text-slate-300 hover:text-red-500 transition-colors text-xs font-bold uppercase">Kaldır</button>
+                </div>
+            `).join('');
+
+            // Hizmet Listesi
+            document.getElementById('list-services').innerHTML = db.services.map((s, i) => `
+                <div class="list-item">
+                    <div>
+                        <b class="text-slate-800 text-sm">${s.n}</b>
+                        <p class="text-[10px] text-green-600 font-bold uppercase">${s.p} TL</p>
+                    </div>
+                    <button onclick="db.services.splice(${i},1); save();" class="text-slate-300 hover:text-red-500 transition-colors text-xs font-bold uppercase">SİL</button>
+                </div>
+            `).join('');
+
+            // Müşteri Listesi
             const clients = [...new Set(db.apps.map(a => a.phone))];
             document.getElementById('list-users').innerHTML = clients.map(c => {
                 const u = db.apps.find(x => x.phone === c);
-                return `<div class="bg-blue-50 p-4 rounded-xl"><b>${u.name}</b><br><small>${c}</small></div>`;
+                return `<div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-center h-20">
+                    <b class="text-slate-800 text-xs">${u.name}</b>
+                    <small class="text-slate-400 font-mono">${c}</small>
+                </div>`;
             }).join('');
         }
+
         render();
     </script>
 </body>
