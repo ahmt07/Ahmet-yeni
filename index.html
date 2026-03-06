@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ahmet Tekeli | Randevu Sistemi</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Ahmet Tekeli | Premium Barber</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -13,96 +11,84 @@
             font-family: 'Poppins', sans-serif;
             background: url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=2070') no-repeat center center fixed;
             background-size: cover;
-            color: #1e293b;
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center;
         }
-        /* Arka plan karartma katmanı */
         body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: -1;
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); z-index: -1;
         }
-        /* Görseldeki Glassmorphism Efekti */
+        /* Görseldeki Ana Panel */
         .glass-container {
             background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 40px;
-            padding: 30px;
-            width: 90%;
-            max-width: 450px;
+            padding: 30px; width: 92%; max-width: 450px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            position: relative;
         }
         .input-field {
             background: rgba(255, 255, 255, 0.9);
-            border: none;
-            border-radius: 12px;
-            padding: 12px 16px;
-            width: 100%;
-            color: #1e3a8a;
-            font-size: 15px;
-            margin-top: 6px;
+            border: none; border-radius: 12px;
+            padding: 12px 16px; width: 100%;
+            color: #1e3a8a; font-size: 15px; margin-top: 6px;
         }
         .label-text {
-            color: #1e3a8a;
-            font-weight: 700;
-            font-size: 14px;
-            margin-top: 15px;
-            display: block;
+            color: #1e3a8a; font-weight: 700; font-size: 14px; margin-top: 15px; display: block;
         }
-        /* Görseldeki Altın Sarısı Buton */
-        .btn-randevu {
+        .btn-gold {
             background: linear-gradient(to bottom, #d4a373, #a67c52);
-            color: white;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            width: 100%;
-            padding: 16px;
-            border-radius: 15px;
-            margin-top: 25px;
-            transition: 0.3s;
+            color: white; font-weight: 700; text-transform: uppercase;
+            width: 100%; padding: 16px; border-radius: 15px; margin-top: 25px;
             box-shadow: 0 4px 15px rgba(166, 124, 82, 0.4);
         }
-        .btn-randevu:active { transform: scale(0.98); }
-        
-        .slot-btn {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            padding: 8px;
-            text-align: center;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            color: #1e3a8a;
+        /* Üst Butonlar: Admin ve Sorgulama */
+        .top-nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 16px; border-radius: 12px;
+            font-weight: 700; font-size: 12px; color: #1e3a8a;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: 0.3s;
         }
-        .slot-selected { background: #1e3a8a; color: white; }
-        .slot-busy { opacity: 0.3; text-decoration: line-through; cursor: not-allowed; }
-        
-        .hidden { display: none; }
+        .top-nav-btn:hover { background: #fff; transform: translateY(-2px); }
+
+        .slot-btn {
+            background: rgba(255, 255, 255, 0.8); border-radius: 8px;
+            padding: 8px; text-align: center; font-size: 13px; font-weight: 600;
+            color: #1e3a8a; cursor: pointer;
+        }
+        .slot-selected { background: #1e3a8a !important; color: white !important; }
+        .slot-busy { opacity: 0.3; text-decoration: line-through; pointer-events: none; }
+
+        /* Modal (Giriş Panelleri için) */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            display: none; align-items: center; justify-content: center; z-index: 100;
+        }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 30px;
+            width: 90%; max-width: 400px; text-align: center;
+        }
     </style>
 </head>
 <body>
 
-    <button onclick="toggleAdmin()" class="fixed top-6 right-6 bg-white px-4 py-2 rounded-xl font-bold text-sm text-slate-800 shadow-lg z-50">Admin Girişi</button>
+    <div class="fixed top-6 right-6 flex gap-3 z-50">
+        <button onclick="openModal('searchModal')" class="top-nav-btn">Randevu Sorgula</button>
+        <button onclick="openModal('adminModal')" class="top-nav-btn">Admin Girişi</button>
+    </div>
 
-    <div id="customerSection" class="glass-container text-center relative">
+    <div id="mainForm" class="glass-container text-center">
         <div class="absolute -top-16 left-1/2 -translate-x-1/2">
             <img src="logo.png" class="w-32 h-32 rounded-full border-4 border-white shadow-xl" onerror="this.src='https://via.placeholder.com/128?text=LOGO'">
         </div>
 
         <div class="mt-16">
-            <h1 class="text-3xl font-bold text-[#1e3a8a] tracking-tight">AHMET TEKELİ</h1>
-            <p class="text-[#1e3a8a] text-sm font-semibold tracking-widest">ERKEK KUAFÖRÜ</p>
+            <h1 class="text-3xl font-bold text-[#1e3a8a] tracking-tight uppercase">AHMET TEKELİ</h1>
+            <p class="text-[#1e3a8a] text-sm font-semibold tracking-[4px] opacity-80 uppercase">Erkek Kuaförü</p>
             <div class="flex justify-center items-center mt-2 text-yellow-500 font-bold">
-                ⭐ 4.8 <span class="text-[#1e3a8a]/60 text-xs ml-1 font-normal">(164)</span>
+                ⭐ 4.8 <span class="text-[#1e3a8a]/60 text-xs ml-1 font-normal">(164 Değerlendirme)</span>
             </div>
         </div>
 
@@ -116,163 +102,166 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="label-text">Berber Seçimi</label>
-                    <select id="sBarber" onchange="updateSlots()" class="input-field appearance-none">
-                        <option value="">Bir berber seçin</option>
+                    <select id="sBarber" onchange="loadSlots()" class="input-field">
+                        <option value="">Berber seçin</option>
+                        <option value="Ahmet Tekeli">Ahmet Tekeli</option>
+                        <option value="Mehmet Usta">Mehmet Usta</option>
                     </select>
                 </div>
                 <div>
                     <label class="label-text">İşlem Seçimi</label>
-                    <select id="sService" class="input-field appearance-none">
+                    <select id="sService" class="input-field">
                         <option value="">Hizmet seçin</option>
+                        <option value="Saç Kesimi">Saç Kesimi</option>
+                        <option value="Sakal Tıraşı">Sakal Tıraşı</option>
+                        <option value="Saç & Sakal">Saç & Sakal</option>
                     </select>
                 </div>
             </div>
 
             <label class="label-text">Tarih</label>
-            <input type="date" id="sDate" onchange="updateSlots()" class="input-field">
+            <input type="date" id="sDate" onchange="loadSlots()" class="input-field">
 
             <label class="label-text">Saat Seçimi</label>
             <div id="slotGrid" class="grid grid-cols-4 gap-2 mt-2">
-                <p class="col-span-4 text-xs text-[#1e3a8a]/60 italic">Lütfen bir berber ve tarih seçin.</p>
+                <p class="col-span-4 text-[10px] text-[#1e3a8a]/50 italic">Lütfen berber ve tarih seçiniz.</p>
             </div>
         </div>
 
-        <button onclick="bookApp()" class="btn-randevu">RANDEVU AL</button>
+        <button onclick="createBooking()" class="btn-gold">RANDEVU AL</button>
         
-        <p onclick="showSearch()" class="text-[#1e3a8a] text-xs mt-4 underline cursor-pointer opacity-70">Randevularımı Görüntüle</p>
+        <p class="mt-4 text-[10px] text-[#1e3a8a]/40 uppercase tracking-widest">Designed by Oğuzhan Gümüş</p>
     </div>
 
-    <div id="searchSection" class="glass-container hidden text-center">
-        <h2 class="text-2xl font-bold text-[#1e3a8a] mb-6">Randevu Sorgula</h2>
-        <input type="tel" id="searchPhone" placeholder="Telefon Numaranız" class="input-field text-center py-4">
-        <button onclick="query()" class="btn-randevu mt-4">SORGULA</button>
-        <div id="queryResult" class="mt-6 p-4 rounded-xl bg-white/40 text-sm font-bold text-[#1e3a8a]"></div>
-        <button onclick="location.reload()" class="mt-4 text-xs text-[#1e3a8a] underline">Geri Dön</button>
+    <div id="searchModal" class="modal-overlay">
+        <div class="modal-content animate-in zoom-in duration-300">
+            <h2 class="text-xl font-bold text-[#1e3a8a] mb-4">Randevumu Bul</h2>
+            <p class="text-xs text-gray-500 mb-4">Kayıtlı telefon numaranızı giriniz.</p>
+            <input type="tel" id="qPhone" placeholder="05XXXXXXXXX" class="input-field border border-gray-200 mb-4 text-center">
+            <button onclick="findBooking()" class="btn-gold !mt-0 mb-3">SORGULA</button>
+            <div id="searchResult" class="text-sm py-3 hidden bg-gray-50 rounded-xl border border-gray-100 mb-4"></div>
+            <button onclick="closeModal('searchModal')" class="text-xs text-gray-400 font-bold uppercase">Kapat</button>
+        </div>
     </div>
 
-    <div id="adminSection" class="glass-container hidden max-h-[80vh] overflow-y-auto">
-        <h2 class="text-2xl font-bold text-[#1e3a8a] mb-4">Yönetim Paneli</h2>
-        <div class="space-y-4">
-            <div class="bg-white/90 p-3 rounded-xl">
-                <h3 class="text-xs font-bold mb-2">Berber Ekle</h3>
-                <div class="flex gap-2">
-                    <input type="text" id="newB" class="input-field !mt-0 !py-2 text-xs" placeholder="İsim">
-                    <button onclick="addB()" class="bg-blue-900 text-white px-3 rounded-lg text-xs">Ekle</button>
-                </div>
+    <div id="adminModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="text-xl font-bold text-[#1e3a8a] mb-4">Yönetici Girişi</h2>
+            <input type="password" id="adminPass" placeholder="Şifre" class="input-field border border-gray-200 mb-4 text-center">
+            <button onclick="checkAdmin()" class="btn-gold !mt-0 mb-4">GİRİŞ YAP</button>
+            <button onclick="closeModal('adminModal')" class="text-xs text-gray-400 font-bold uppercase">İptal</button>
+        </div>
+    </div>
+
+    <div id="adminPanel" class="modal-overlay !items-start pt-10 overflow-y-auto">
+        <div class="modal-content !max-w-2xl text-left">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-[#1e3a8a]">Randevular</h2>
+                <button onclick="closeModal('adminPanel')" class="bg-red-50 text-red-500 p-2 rounded-full px-4 text-xs font-bold">Kapat</button>
             </div>
-            <div id="adminAppList" class="space-y-2">
+            <div id="adminList" class="space-y-3">
                 </div>
-            <button onclick="location.reload()" class="w-full py-2 bg-red-800 text-white rounded-xl text-xs font-bold">Paneli Kapat</button>
         </div>
     </div>
 
     <script>
-        // --- VERİ TABANI ---
-        let db = JSON.parse(localStorage.getItem('at_barber_db')) || {
-            barbers: ['Ahmet Tekeli', 'Mehmet Usta'],
-            services: ['Saç Kesimi', 'Sakal Tıraşı', 'Cilt Bakımı', 'Saç & Sakal'],
-            apps: [],
-            hours: { start: "09:00", end: "20:00" }
-        };
+        // VERİ YÖNETİMİ
+        let state = JSON.parse(localStorage.getItem('barber_data_v4')) || { apps: [] };
 
-        let selectedTime = null;
-
-        function save() { 
-            localStorage.setItem('at_barber_db', JSON.stringify(db)); 
-            renderUI(); 
+        function save() {
+            localStorage.setItem('barber_data_v4', JSON.stringify(state));
+            renderAdmin();
         }
 
-        // --- TAKVİM SİSTEMİ ---
-        function updateSlots() {
+        // MODAL KONTROLLERİ
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // SAAT SLOTLARI
+        function loadSlots() {
             const grid = document.getElementById('slotGrid');
             const date = document.getElementById('sDate').value;
             const barber = document.getElementById('sBarber').value;
             grid.innerHTML = "";
             if(!date || !barber) return;
 
-            let current = new Date(`${date}T${db.hours.start}`);
-            let end = new Date(`${date}T${db.hours.end}`);
+            const hours = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"];
 
-            while(current < end) {
-                let time = current.toTimeString().substring(0,5);
-                let busy = db.apps.some(a => a.date === date && a.time === time && a.barber === barber);
-                
-                let d = document.createElement('div');
-                d.className = `slot-btn ${busy ? 'slot-busy' : ''}`;
-                d.innerText = time;
+            hours.forEach(h => {
+                const busy = state.apps.some(a => a.date === date && a.time === h && a.barber === barber);
+                const btn = document.createElement('div');
+                btn.className = `slot-btn ${busy ? 'slot-busy' : ''}`;
+                btn.innerText = h;
                 if(!busy) {
-                    d.onclick = () => {
+                    btn.onclick = () => {
                         document.querySelectorAll('.slot-btn').forEach(x => x.classList.remove('slot-selected'));
-                        d.classList.add('slot-selected');
-                        selectedTime = time;
+                        btn.classList.add('slot-selected');
+                        window.selectedTime = h;
                     };
                 }
-                grid.appendChild(d);
-                current.setMinutes(current.getMinutes() + 30);
-            }
+                grid.appendChild(btn);
+            });
         }
 
-        // --- RANDEVU AL ---
-        function bookApp() {
+        // RANDEVU OLUŞTUR
+        function createBooking() {
             const name = document.getElementById('cName').value;
             const phone = document.getElementById('cPhone').value;
             const date = document.getElementById('sDate').value;
-            const service = document.getElementById('sService').value;
             const barber = document.getElementById('sBarber').value;
+            const service = document.getElementById('sService').value;
 
-            if(!name || !phone || !selectedTime) return alert("Lütfen boş alan bırakmayın!");
+            if(!name || !phone || !window.selectedTime) return alert("Lütfen tüm alanları seçiniz!");
 
-            db.apps.push({ id: Date.now(), name, phone, date, time: selectedTime, service, barber });
+            state.apps.push({ id: Date.now(), name, phone, date, time: window.selectedTime, barber, service });
             save();
-            alert("Randevunuz başarıyla oluşturuldu!");
+            alert("Randevunuz başarıyla oluşturuldu.");
             location.reload();
         }
 
-        // --- SORGULAMA ---
-        function query() {
-            const phone = document.getElementById('searchPhone').value;
-            const found = db.apps.filter(a => a.phone === phone).pop();
-            const res = document.getElementById('queryResult');
-            if(found) {
-                res.innerHTML = `Müşteri: ${found.name}<br>Tarih: ${found.date}<br>Saat: ${found.time}<br>Berber: ${found.barber}`;
+        // RANDEVU SORGULA
+        function findBooking() {
+            const phone = document.getElementById('qPhone').value;
+            const app = state.apps.filter(a => a.phone === phone).pop();
+            const res = document.getElementById('searchResult');
+            res.classList.remove('hidden');
+            if(app) {
+                res.innerHTML = `<b>Sn. ${app.name}</b><br>${app.date} - ${app.time}<br><small>${app.service} | ${app.barber}</small>`;
             } else {
-                res.innerHTML = "Aktif randevu bulunamadı.";
+                res.innerHTML = "Randevu bulunamadı.";
             }
         }
 
-        // --- ADMIN ---
-        function toggleAdmin() {
-            const p = prompt("Şifre (1234):");
-            if(p === "1234") {
-                document.getElementById('customerSection').classList.add('hidden');
-                document.getElementById('adminSection').classList.remove('hidden');
-            }
+        // ADMIN GİRİŞ
+        function checkAdmin() {
+            const pass = document.getElementById('adminPass').value;
+            if(pass === "1234") {
+                closeModal('adminModal');
+                openModal('adminPanel');
+                renderAdmin();
+            } else { alert("Hatalı Şifre!"); }
         }
 
-        function addB() {
-            const n = document.getElementById('newB').value;
-            if(n) { db.barbers.push(n); save(); document.getElementById('newB').value=""; }
-        }
-
-        function renderUI() {
-            document.getElementById('sBarber').innerHTML = `<option value="">Bir berber seçin</option>` + db.barbers.map(b => `<option value="${b}">${b}</option>`).join('');
-            document.getElementById('sService').innerHTML = `<option value="">Hizmet seçin</option>` + db.services.map(s => `<option value="${s}">${s}</option>`).join('');
-            
-            document.getElementById('adminAppList').innerHTML = db.apps.sort((a,b)=>a.date.localeCompare(b.date)).map(a => `
-                <div class="bg-white/90 p-3 rounded-lg flex justify-between items-center text-[10px]">
-                    <div><b>${a.name}</b><br>${a.date} | ${a.time} | ${a.barber}</div>
-                    <button onclick="deleteA(${a.id})" class="text-red-600">Sil</button>
+        // ADMIN LİSTESİ
+        function renderAdmin() {
+            const list = document.getElementById('adminList');
+            list.innerHTML = state.apps.sort((a,b) => a.date.localeCompare(b.date)).map(a => `
+                <div class="bg-gray-50 p-4 rounded-2xl flex justify-between items-center border border-gray-100">
+                    <div>
+                        <div class="font-bold text-[#1e3a8a] text-sm">${a.name}</div>
+                        <div class="text-[10px] text-gray-500">${a.date} | ${a.time} | ${a.barber}</div>
+                    </div>
+                    <button onclick="deleteApp(${a.id})" class="text-red-400 font-bold text-xs">SİL</button>
                 </div>
             `).join('');
         }
 
-        function deleteA(id) { db.apps = db.apps.filter(x=>x.id!==id); save(); }
-        function showSearch() { 
-            document.getElementById('customerSection').classList.add('hidden');
-            document.getElementById('searchSection').classList.remove('hidden');
+        function deleteApp(id) {
+            if(confirm('Silinsin mi?')) {
+                state.apps = state.apps.filter(a => a.id !== id);
+                save();
+            }
         }
-
-        renderUI();
     </script>
 </body>
 </html>
